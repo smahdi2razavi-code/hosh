@@ -46,9 +46,12 @@ b{font-weight:700}
 /* ---------- صفحه‌ها ---------- */
 .screen{position:absolute;top:0;right:0;bottom:0;left:0;display:none;
   flex-direction:column;padding:calc(10px + var(--safeT)) 12px calc(10px + var(--safeB));
-  overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+  overflow:hidden}
+/* همه محتوای صفحه داخل این کادر می‌نشیند؛ اگر جا نشد کوچک می‌شود
+   تا هیچ صفحه‌ای اسکرول نداشته باشد */
+.fitBox{flex:1;min-height:0;display:flex;flex-direction:column;width:100%;
+  transform-origin:top right}
 .screen.on{display:flex;animation:scrIn .26s cubic-bezier(.2,.8,.3,1)}
-.screen.nofit{overflow:hidden}
 @keyframes scrIn{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:none}}
 
 /* ---------- عناصر پایه ---------- */
@@ -212,9 +215,19 @@ b{font-weight:700}
   padding:9px;border-radius:12px;cursor:pointer;font-size:14px}
 .tab.on{background:linear-gradient(180deg,#A98BFF,#7A4BF0);color:#fff;
   box-shadow:0 4px 12px rgba(0,0,0,.3)}
-.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding-bottom:10px}
-.cell{position:relative;aspect-ratio:1/1;min-height:56px;border-radius:16px;border:1px solid var(--line);
-  background:var(--card);color:#fff;font:inherit;font-weight:700;font-size:16px;cursor:pointer;
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;flex:1;min-height:0;
+  align-content:center;justify-content:center}
+.pager{display:flex;align-items:center;gap:10px;justify-content:center;padding:10px 0 2px;
+  flex:0 0 auto}
+.pager .ico{width:38px;height:38px;flex:0 0 38px;font-size:22px;line-height:1}
+.pager .ico.off{opacity:.28;pointer-events:none}
+.pgLbl{font-size:12px;color:var(--dim);min-width:74px;text-align:center}
+.pgDots{display:flex;gap:6px;align-items:center}
+.pgDots i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.22);
+  display:block;cursor:pointer}
+.pgDots i.on{background:var(--gold);transform:scale(1.35)}
+.cell{position:relative;aspect-ratio:1/1;min-height:48px;max-height:98px;border-radius:18px;border:1px solid var(--line);
+  background:var(--card);color:#fff;font:inherit;font-weight:700;font-size:18px;cursor:pointer;
   display:flex;align-items:center;justify-content:center;flex-direction:column;padding:0}
 .cell.lock{opacity:.42;color:var(--dim)}
 .cell.done{background:linear-gradient(160deg,#6BE79A,#22A45B);border-color:transparent;color:#04321a}
@@ -236,9 +249,14 @@ b{font-weight:700}
 .rank .nm{flex:1;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .rank .sc{color:var(--cyan);font-weight:700}
 .rank .no.g1{color:#FFD24A} .rank .no.g2{color:#D6E1EA} .rank .no.g3{color:#E7A96B}
-.avPick{display:grid;grid-template-columns:repeat(6,1fr);gap:7px;margin-top:8px}
-.avPick button{aspect-ratio:1/1;min-height:42px;border-radius:14px;border:1px solid var(--line);
-  background:var(--card);font-size:22px;cursor:pointer;padding:0}
+.avPick{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-top:9px}
+.avPick button{height:34px;border-radius:11px;border:1px solid var(--line);
+  background:var(--card);font-size:18px;cursor:pointer;padding:0;line-height:1}
+.kvGrid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.kv2{background:rgba(0,0,0,.2);border:1px solid var(--line);border-radius:13px;
+  padding:7px 9px;text-align:center}
+.kv2 b{display:block;font-size:16px;line-height:1.4}
+.kv2 span{font-size:10.5px;color:var(--dim)}
 .avPick button.on{background:linear-gradient(160deg,#A98BFF,#7A4BF0);border-color:transparent;
   box-shadow:0 0 0 3px rgba(169,139,255,.3)}
 .inp{width:100%;border-radius:14px;border:1px solid var(--line);background:rgba(0,0,0,.25);
@@ -306,67 +324,17 @@ b{font-weight:700}
   100%{transform:translate(-50%,-70px);opacity:0}}
 
 /* ---------- درباره ما ---------- */
-.brand{display:flex;flex-direction:column;align-items:center;gap:2px;padding:14px 8px}
-.brandMark{width:96px;height:96px;border-radius:28px;display:flex;align-items:center;
+.brand{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 6px}
+.brandMark{width:84px;height:84px;border-radius:26px;display:flex;align-items:center;
   justify-content:center;font-size:40px;font-weight:700;letter-spacing:1px;color:#1a1030;
   background:linear-gradient(160deg,#FFE9A8,#FFB627 55%,#FF7A45);
   box-shadow:0 12px 30px rgba(255,150,40,.35);cursor:pointer}
-.brandName{font-size:26px;font-weight:700;margin-top:8px;
+.brandName{font-size:23px;font-weight:700;margin-top:6px;
   background:linear-gradient(180deg,#FFF0B8,#FFB627);-webkit-background-clip:text;
   background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
 .tagList{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:8px}
 .tagList span{background:var(--card2);border:1px solid var(--line);border-radius:12px;
   padding:3px 10px;font-size:12px}
-
-/* ---------- پنل مدیریت ---------- */
-.aTabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;flex:0 0 auto;
-  -webkit-overflow-scrolling:touch}
-.aTabs::-webkit-scrollbar{display:none}
-.aTab{flex:0 0 auto;border:1px solid var(--line);background:var(--card);color:var(--dim);
-  font:inherit;font-size:13px;font-weight:700;padding:8px 12px;border-radius:14px;cursor:pointer}
-.aTab.on{background:linear-gradient(180deg,#A98BFF,#7A4BF0);color:#fff;border-color:transparent}
-.aBody{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:16px}
-.sec{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px;
-  margin-bottom:10px}
-.sec h3{margin:0 0 8px;font-size:15px;display:flex;align-items:center;gap:6px}
-.sec h3 .dim{font-size:11px;font-weight:400}
-.frow{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:13px}
-.frow+.frow{border-top:1px dashed rgba(255,255,255,.10)}
-.frow>span:first-child{flex:1;color:var(--dim)}
-.frow .inp{width:112px;flex:0 0 112px;padding:8px 10px;font-size:14px;text-align:center}
-.frow .inp.wide{width:100%;flex:1;text-align:right}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.kpi{background:rgba(0,0,0,.22);border:1px solid var(--line);border-radius:14px;
-  padding:9px 6px;text-align:center}
-.kpi b{display:block;font-size:19px;line-height:1.3}
-.kpi span{font-size:11px;color:var(--dim)}
-.danger{border-color:rgba(255,95,95,.5);background:rgba(255,95,95,.10)}
-.danger h3{color:#FFB4B4}
-.itemRow{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.2);
-  border:1px solid var(--line);border-radius:14px;padding:7px 9px;margin-bottom:6px}
-.itemRow .e{font-size:22px;flex:0 0 auto}
-.itemRow .n{flex:1;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.itemRow .c{font-size:11px;color:var(--dim);flex:0 0 auto}
-.iconBtn{width:34px;height:34px;flex:0 0 34px;border-radius:11px;border:1px solid var(--line);
-  background:var(--card2);color:#fff;font-size:15px;cursor:pointer;padding:0;font-family:inherit}
-.logLine{font-size:11.5px;color:var(--dim);padding:5px 0;border-bottom:1px dashed rgba(255,255,255,.09);
-  display:flex;gap:8px}
-.logLine b{color:#fff;font-weight:700}
-.pinBox{display:flex;gap:8px;justify-content:center;margin:10px 0}
-.pinBox i{width:15px;height:15px;border-radius:50%;background:rgba(255,255,255,.18);
-  border:1px solid var(--line);display:block}
-.pinBox i.on{background:var(--gold);border-color:transparent;
-  box-shadow:0 0 10px rgba(255,201,74,.6)}
-.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px}
-.keypad button{border:1px solid var(--line);background:var(--card2);color:#fff;font:inherit;
-  font-size:21px;font-weight:700;padding:12px 0;border-radius:14px;cursor:pointer}
-.keypad button:active{background:var(--violet)}
-.warnBox{background:rgba(255,201,74,.12);border:1px solid rgba(255,201,74,.4);
-  border-radius:14px;padding:9px 11px;font-size:12px;line-height:1.9;text-align:right}
-.okBox{background:rgba(67,217,123,.12);border:1px solid rgba(67,217,123,.4);
-  border-radius:14px;padding:9px 11px;font-size:12px;line-height:1.9;text-align:right}
-.mono{font-family:monospace;font-size:12px;word-break:break-all;direction:ltr;text-align:left}
 
 /* ---------- صفحه‌های بزرگ‌تر ---------- */
 @media (min-width:520px){
@@ -389,7 +357,7 @@ b{font-weight:700}
   <section id="s-stages" class="screen"></section>
 
   <!-- ================= پیدا کردن تفاوت ================= -->
-  <section id="s-diff" class="screen nofit">
+  <section id="s-diff" class="screen">
     <div class="hud">
       <button class="ico" data-back>→</button>
       <div class="hudMid">
@@ -420,7 +388,7 @@ b{font-weight:700}
   </section>
 
   <!-- ================= حدس تصویر ================= -->
-  <section id="s-guess" class="screen nofit">
+  <section id="s-guess" class="screen">
     <div class="hud">
       <button class="ico" data-back>→</button>
       <div class="hudMid">
@@ -462,14 +430,12 @@ b{font-weight:700}
   <!-- ================= درباره ما ================= -->
   <section id="s-about" class="screen"></section>
 
-  <!-- ================= پنل مدیریت (مخفی) ================= -->
-  <section id="s-admin" class="screen nofit"></section>
-
 </div>
 <div id="modalRoot"></div>
 <div id="toast"></div>
 <div id="fx"></div>
 
+<script src="config.js"></script>
 <script>
 /* eslint-disable */
 (function(){
@@ -530,212 +496,17 @@ var FEATURES = {
   tournament:false,    /* تورنمنت */
   friends:false        /* سیستم دوستان */
 };
-var TEAM = { name:'SMRx', game:'سلطان معما', version:'۱٫۱', versionRaw:'1.1' };
+var TEAM = { name:'SMRx', game:'سلطان معما', version:'۱٫۲', versionRaw:'1.2' };
 
 /* ============================================================
-   ۲-۱) رمزنگاری محلی (SHA-256 و PBKDF2 بدون کتابخانه بیرونی)
-        برای محافظت از پنل مدیریت استفاده می‌شود.
-   ============================================================ */
-var CRYPTO=(function(){
-  var K=[0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
-         0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,
-         0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,
-         0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,
-         0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,
-         0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,
-         0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,
-         0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
-  function rotr(x,n){ return (x>>>n)|(x<<(32-n)); }
-  function sha256(msg){
-    var H=[0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
-    var l=msg.length, blocks=Math.ceil((l+9)/64), total=blocks*64;
-    var p=new Uint8Array(total), i, j;
-    p.set(msg); p[l]=0x80;
-    var bits=l*8, hi=Math.floor(bits/4294967296), lo=bits>>>0;
-    p[total-8]=(hi>>>24)&255; p[total-7]=(hi>>>16)&255; p[total-6]=(hi>>>8)&255; p[total-5]=hi&255;
-    p[total-4]=(lo>>>24)&255; p[total-3]=(lo>>>16)&255; p[total-2]=(lo>>>8)&255; p[total-1]=lo&255;
-    var w=new Int32Array(64), a,b,c,d,e,f,g,h,t1,t2,s0,s1,ch,mj,o;
-    for(i=0;i<blocks;i++){
-      o=i*64;
-      for(j=0;j<16;j++) w[j]=(p[o+j*4]<<24)|(p[o+j*4+1]<<16)|(p[o+j*4+2]<<8)|p[o+j*4+3];
-      for(j=16;j<64;j++){
-        s0=rotr(w[j-15],7)^rotr(w[j-15],18)^(w[j-15]>>>3);
-        s1=rotr(w[j-2],17)^rotr(w[j-2],19)^(w[j-2]>>>10);
-        w[j]=(w[j-16]+s0+w[j-7]+s1)|0;
-      }
-      a=H[0];b=H[1];c=H[2];d=H[3];e=H[4];f=H[5];g=H[6];h=H[7];
-      for(j=0;j<64;j++){
-        s1=rotr(e,6)^rotr(e,11)^rotr(e,25);
-        ch=(e&f)^(~e&g);
-        t1=(h+s1+ch+K[j]+w[j])|0;
-        s0=rotr(a,2)^rotr(a,13)^rotr(a,22);
-        mj=(a&b)^(a&c)^(b&c);
-        t2=(s0+mj)|0;
-        h=g;g=f;f=e;e=(d+t1)|0;d=c;c=b;b=a;a=(t1+t2)|0;
-      }
-      H[0]=(H[0]+a)|0;H[1]=(H[1]+b)|0;H[2]=(H[2]+c)|0;H[3]=(H[3]+d)|0;
-      H[4]=(H[4]+e)|0;H[5]=(H[5]+f)|0;H[6]=(H[6]+g)|0;H[7]=(H[7]+h)|0;
-    }
-    var out=new Uint8Array(32);
-    for(i=0;i<8;i++){ out[i*4]=(H[i]>>>24)&255; out[i*4+1]=(H[i]>>>16)&255;
-      out[i*4+2]=(H[i]>>>8)&255; out[i*4+3]=H[i]&255; }
-    return out;
-  }
-  function hmac(key,msg){
-    var i, k=key;
-    if(k.length>64) k=sha256(k);
-    var pad=new Uint8Array(64); pad.set(k);
-    var ip=new Uint8Array(64+msg.length), op=new Uint8Array(64+32);
-    for(i=0;i<64;i++){ ip[i]=pad[i]^0x36; op[i]=pad[i]^0x5c; }
-    ip.set(msg,64);
-    op.set(sha256(ip),64);
-    return sha256(op);
-  }
-  /* PBKDF2-HMAC-SHA256 با خروجی ۳۲ بایتی */
-  function pbkdf2(pw,salt,iter){
-    var s1=new Uint8Array(salt.length+4), i, j;
-    s1.set(salt);
-    s1[salt.length]=0; s1[salt.length+1]=0; s1[salt.length+2]=0; s1[salt.length+3]=1;
-    var u=hmac(pw,s1), t=new Uint8Array(u);
-    for(i=1;i<iter;i++){ u=hmac(pw,u); for(j=0;j<32;j++) t[j]^=u[j]; }
-    return t;
-  }
-  function str2b(s){
-    var out=[], i, c;
-    for(i=0;i<s.length;i++){
-      c=s.charCodeAt(i);
-      if(c<128) out.push(c);
-      else if(c<2048){ out.push(192|(c>>6),128|(c&63)); }
-      else { out.push(224|(c>>12),128|((c>>6)&63),128|(c&63)); }
-    }
-    return new Uint8Array(out);
-  }
-  function hex(b){
-    var s='',i;
-    for(i=0;i<b.length;i++) s+=(b[i]<16?'0':'')+b[i].toString(16);
-    return s;
-  }
-  function rnd(n){
-    var a=new Uint8Array(n), i;
-    try{
-      if(window.crypto && window.crypto.getRandomValues){ window.crypto.getRandomValues(a); return a; }
-    }catch(e){}
-    for(i=0;i<n;i++) a[i]=Math.floor(Math.random()*256);
-    return a;
-  }
-  /* مقایسه با زمان ثابت تا از حمله زمان‌سنجی جلوگیری شود */
-  function same(a,b){
-    if(typeof a!=='string'||typeof b!=='string') return false;
-    if(a.length!==b.length) return false;
-    var r=0,i;
-    for(i=0;i<a.length;i++) r|=a.charCodeAt(i)^b.charCodeAt(i);
-    return r===0;
-  }
-  return {
-    sha256hex:function(s){ return hex(sha256(str2b(s))); },
-    derive:function(pw,saltHex,iter){
-      var salt=new Uint8Array(saltHex.length/2), i;
-      for(i=0;i<salt.length;i++) salt[i]=parseInt(saltHex.substr(i*2,2),16);
-      return hex(pbkdf2(str2b(pw),salt,iter));
-    },
-    randHex:function(n){ return hex(rnd(n)); },
-    same:same
-  };
-})();
-
-/* ============================================================
-   ۲-۲) لایه امنیتی پنل مدیریت
+   ۲-۳) تنظیمات بازی
    ------------------------------------------------------------
-   • رمز هرگز ذخیره نمی‌شود؛ فقط چکیده PBKDF2 با نمک تصادفی.
-   • بعد از چند تلاش ناموفق، قفل زمانی فعال می‌شود (پایدار).
-   • نشست پس از بی‌کاری خودکار بسته می‌شود.
-   • همه کارهای مدیریتی در گزارش ثبت می‌شوند.
+   این مقدارها از فایل کنار بازی به نام config.js خوانده می‌شوند.
+   آن فایل را «پنل مدیریت» (پوشه admin پروژه) می‌سازد؛ کافی است
+   فایل ساخته‌شده را در assets جای‌گزین کنی و بازی را دوباره بسازی.
+   اگر config.js نباشد، همین مقدارهای پیش‌فرض استفاده می‌شوند.
    ============================================================ */
-var SEC=(function(){
-  var KEY='sultan_sec_v1', ITER=15000;
-  var D={ver:1,salt:'',hash:'',iter:ITER,rsalt:'',rhash:'',fails:0,lock:0,
-         timeout:5,wipe:false,log:[],lastLogin:0};
-  var session=0;
-  function load(){
-    try{
-      var raw=localStorage.getItem(KEY);
-      if(raw){ var o=JSON.parse(raw),k; for(k in D) if(o[k]!==undefined) D[k]=o[k]; }
-    }catch(e){}
-    if(!D.log) D.log=[];
-  }
-  function persist(){ try{ localStorage.setItem(KEY,JSON.stringify(D)); }catch(e){} }
-  function log(act,detail){
-    D.log.push({t:Date.now(),a:act,d:detail||''});
-    if(D.log.length>200) D.log=D.log.slice(-200);
-    persist();
-  }
-  /* هرچه تلاش ناموفق بیشتر، قفل طولانی‌تر */
-  function lockMs(f){
-    if(f<3) return 0;
-    if(f<5) return 30*1000;
-    if(f<7) return 5*60*1000;
-    if(f<10) return 30*60*1000;
-    return 60*60*1000;
-  }
-  return {
-    init:load,
-    isSet:function(){ return !!D.hash; },
-    lockedFor:function(){ return Math.max(0,D.lock-Date.now()); },
-    fails:function(){ return D.fails; },
-    data:function(){ return D; },
-    setPin:function(pin){
-      D.salt=CRYPTO.randHex(16);
-      D.iter=ITER;
-      D.hash=CRYPTO.derive(pin,D.salt,D.iter);
-      D.fails=0; D.lock=0;
-      var rec=CRYPTO.randHex(5).toUpperCase();
-      D.rsalt=CRYPTO.randHex(16);
-      D.rhash=CRYPTO.derive(rec,D.rsalt,D.iter);
-      persist(); log('تعیین رمز');
-      return rec;                       /* کد بازیابی فقط همین یک‌بار نشان داده می‌شود */
-    },
-    check:function(pin){
-      if(this.lockedFor()>0) return 'lock';
-      var h=CRYPTO.derive(pin,D.salt,D.iter);
-      if(CRYPTO.same(h,D.hash)){
-        D.fails=0; D.lock=0; D.lastLogin=Date.now();
-        session=Date.now(); persist(); log('ورود موفق');
-        return 'ok';
-      }
-      D.fails++;
-      D.lock=Date.now()+lockMs(D.fails);
-      log('ورود ناموفق','تلاش '+D.fails);
-      if(D.wipe && D.fails>=10){ D.hash=''; D.salt=''; persist(); log('پاک‌سازی امنیتی'); return 'wiped'; }
-      persist();
-      return 'bad';
-    },
-    recover:function(code){
-      if(!D.rhash) return false;
-      var h=CRYPTO.derive(String(code).toUpperCase().trim(),D.rsalt,D.iter);
-      if(CRYPTO.same(h,D.rhash)){
-        D.hash=''; D.salt=''; D.fails=0; D.lock=0; persist();
-        log('بازیابی با کد پشتیبان');
-        return true;
-      }
-      log('بازیابی ناموفق');
-      return false;
-    },
-    open:function(){ return session>0 && (Date.now()-session)<D.timeout*60000; },
-    touch:function(){ if(session) session=Date.now(); },
-    lockNow:function(){ if(session){ session=0; log('خروج از پنل'); } },
-    setTimeout:function(m){ D.timeout=clamp(m|0,1,60); persist(); log('تغییر زمان نشست',D.timeout+' دقیقه'); },
-    setWipe:function(v){ D.wipe=!!v; persist(); log('پاک‌سازی خودکار',v?'روشن':'خاموش'); },
-    clearLog:function(){ D.log=[]; persist(); log('پاک کردن گزارش'); },
-    log:log
-  };
-})();
-
-/* ============================================================
-   ۲-۳) تنظیمات قابل تغییر از پنل مدیریت
-        مقدارهای اینجا روی بازی اثر واقعی دارند و ذخیره می‌شوند.
-   ============================================================ */
-var TKEY='sultan_tune_v1';
-var TUNE={
+var CONF={
   cfg:{},          /* بازنویسی CFG: هزینه‌ها، جان، تعداد مرحله */
   d:{e:25,m:55,h:80, baseTime:100, timeDrop:0.55, minTime:35,
      diffBase:3, diffStep:12, maxDiff:10, props:10, propStep:9,
@@ -745,29 +516,23 @@ var TUNE={
   daily:null,      /* اگر پر باشد جای DAILY می‌نشیند */
   items:null       /* اگر پر باشد جای ITEMS می‌نشیند */
 };
-function tuneLoad(){
-  try{
-    var raw=localStorage.getItem(TKEY);
-    if(!raw) return;
-    var o=JSON.parse(raw),k;
-    for(k in TUNE) if(o[k]!==undefined && o[k]!==null){
-      if(k==='cfg'||k==='d'||k==='mul'){ var j; for(j in o[k]) TUNE[k][j]=o[k][j]; }
-      else TUNE[k]=o[k];
-    }
-  }catch(e){}
+function confLoad(){
+  var c=window.SULTAN_CONFIG, k, j;
+  if(!c) return;
+  for(k in CONF){
+    if(c[k]===undefined || c[k]===null) continue;
+    if(k==='cfg'||k==='d'||k==='mul'){ for(j in c[k]) CONF[k][j]=c[k][j]; }
+    else CONF[k]=c[k];
+  }
+  if(c.features) for(k in c.features) if(FEATURES[k]!==undefined) FEATURES[k]=!!c.features[k];
+  if(c.team) for(k in c.team) if(TEAM[k]!==undefined) TEAM[k]=c.team[k];
 }
-function tuneSave(){ try{ localStorage.setItem(TKEY,JSON.stringify(TUNE)); }catch(e){} }
-function tuneApply(){
+function confApply(){
   var k;
-  for(k in TUNE.cfg) if(CFG[k]!==undefined) CFG[k]=TUNE.cfg[k];
-  if(TUNE.missions && TUNE.missions.length) MISSIONS=TUNE.missions;
-  if(TUNE.daily && TUNE.daily.length===7) DAILY=TUNE.daily;
-  if(TUNE.items && TUNE.items.length>=8){ ITEMS=TUNE.items; rebuildItems(); }
-}
-function tuneReset(){
-  noSave=true;
-  try{ localStorage.removeItem(TKEY); }catch(e){}
-  location.reload();
+  for(k in CONF.cfg) if(CFG[k]!==undefined) CFG[k]=CONF.cfg[k];
+  if(CONF.missions && CONF.missions.length) MISSIONS=CONF.missions;
+  if(CONF.daily && CONF.daily.length===7) DAILY=CONF.daily;
+  if(CONF.items && CONF.items.length>=8){ ITEMS=CONF.items; rebuildItems(); }
 }
 
 /* ============================================================
@@ -1609,9 +1374,9 @@ return {build:build, svgOf:svgOf, W:W, H:H, THEMES:THEMES};
    ۱۱) تنظیمات مراحل (هرچه جلوتر، سخت‌تر)
    ============================================================ */
 var DIFF_NAMES=['آسان','متوسط','سخت','خیلی سخت'];
-function levelOf(n){ var t=TUNE.d; return n<=t.e?0 : (n<=t.m?1 : (n<=t.h?2:3)); }
+function levelOf(n){ var t=CONF.d; return n<=t.e?0 : (n<=t.m?1 : (n<=t.h?2:3)); }
 function diffCfg(n){
-  var t=TUNE.d, d=levelOf(n), special=(n%10===0);
+  var t=CONF.d, d=levelOf(n), special=(n%10===0);
   var diffs=clamp(t.diffBase+Math.floor((n-1)/t.diffStep),3,t.maxDiff);
   if(special) diffs=Math.min(t.maxDiff,diffs+1);
   return {n:n, d:d, special:special, diffs:diffs,
@@ -1619,7 +1384,7 @@ function diffCfg(n){
     props:clamp(t.props+Math.floor(n/t.propStep),10,16)};
 }
 function guessCfg(n){
-  var t=TUNE.d, d=levelOf(n), special=(n%10===0);
+  var t=CONF.d, d=levelOf(n), special=(n%10===0);
   return {n:n, d:d, special:special,
     time:Math.round(clamp(t.gTime-n*t.gDrop,t.gMin,t.gTime)),
     blur:[16,20,24,28][d],
@@ -1645,6 +1410,8 @@ function fitScenes(){
 }
 function startDiff(n){
   n=clamp(n,1,CFG.TOTAL_STAGES);
+  /* مرحله قفل هرگز اجرا نمی‌شود، از هر مسیری که صدا زده شود */
+  if(n>S.diffStage){ toast('اول باید مرحله‌های قبلی را تمام کنی 🔒'); Sfx.wrong(); return; }
   stopDiff();
   var cfg=diffCfg(n);
   DG.cfg=cfg;
@@ -1656,6 +1423,7 @@ function startDiff(n){
   S.lastMode='diff'; save();
   $('#svgA').innerHTML=SC.svgOf(DG.scene,'a');
   $('#svgB').innerHTML=SC.svgOf(DG.scene,'b');
+  $('#dHint').innerHTML='💡 راهنما · <b>'+fa(CFG.HINT_COST)+'</b> 🪙';
   $('#dTitle').textContent='مرحله '+fa(n)+(cfg.special?' ⭐':'');
   $('#dSub').textContent=DIFF_NAMES[cfg.d]+' · '+DG.scene.th.name+(cfg.special?' · مرحله ویژه':'');
   $('#dCoins').textContent=fa(S.coins);
@@ -1779,8 +1547,8 @@ function diffWin(){
   var cfg=DG.cfg, secLeft=Math.max(0,DG.left/1000);
   var ratio=secLeft/cfg.time;
   var stars = ratio>0.5?3:(ratio>0.22?2:1);
-  var pts=Math.round((50*DG.total + secLeft*4*(1+cfg.d*0.2))*(cfg.special?1.5:1)*TUNE.mul.score);
-  var coins=Math.round((20+DG.total*5+stars*10)*(cfg.special?2:1)*TUNE.mul.coin);
+  var pts=Math.round((50*DG.total + secLeft*4*(1+cfg.d*0.2))*(cfg.special?1.5:1)*CONF.mul.score);
+  var coins=Math.round((20+DG.total*5+stars*10)*(cfg.special?2:1)*CONF.mul.coin);
   var key='d'+cfg.n, isNew=!S.stars[key];
   if(!S.stars[key]||S.stars[key]<stars) S.stars[key]=stars;
   if(isNew) S.done++;
@@ -1845,6 +1613,7 @@ function noLives(after){
 }
 function startGuess(n){
   n=clamp(n,1,CFG.TOTAL_STAGES);
+  if(n>S.guessStage){ toast('اول باید مرحله‌های قبلی را تمام کنی 🔒'); Sfx.wrong(); return; }
   stopGuess();
   regenLives();
   if(S.lives<=0){ go('guess'); renderLives(); noLives(function(){ startGuess(n); }); return; }
@@ -1872,6 +1641,8 @@ function startGuess(n){
   $('#gCoins').textContent=fa(S.coins);
   $('#gEmoji').textContent=item[0];
   $('#gPic').style.background=PIC_BG[(n-1)%PIC_BG.length];
+  $('#gFifty').innerHTML='❌ حذف گزینه · <b>'+fa(CFG.FIFTY_COST)+'</b>';
+  $('#gClear').innerHTML='🔍 واضح‌تر · <b>'+fa(CFG.CLEAR_COST)+'</b>';
   $('#gFifty').disabled=false; $('#gClear').disabled=false;
   renderLives();
 
@@ -1930,8 +1701,8 @@ function answerGuess(btn,opt){
     GG.answered=true; GG.live=false;
     btn.className='opt good';
     GG.cleared=9; paintPic();
-    var pts=Math.round(guessPts()*TUNE.mul.score),
-        coins=Math.round((25+GG.cfg.d*8)*(GG.cfg.special?2:1)*TUNE.mul.coin);
+    var pts=Math.round(guessPts()*CONF.mul.score),
+        coins=Math.round((25+GG.cfg.d*8)*(GG.cfg.special?2:1)*CONF.mul.coin);
     S.correct++; addScore(pts); addCoins(coins);
     mission('guess',1); mission('play',1);
     var key='g'+GG.cfg.n, isNew=!S.stars[key];
@@ -1997,7 +1768,7 @@ function useClear(){
 /* ============================================================
    ۱۴) صفحه‌ها: خانه، مراحل، رتبه‌بندی، پروفایل، مأموریت‌ها
    ============================================================ */
-var stagesTab='diff';
+var stagesTab='diff', stagePage=-1, PER_PAGE=20;
 
 function wire(root){
   $$('[data-act]',root).forEach(function(b){
@@ -2070,29 +1841,43 @@ RENDER.stages=function(){
   var s=$('#s-stages');
   var isD=stagesTab==='diff';
   var open=isD?S.diffStage:S.guessStage;
-  var h='<div class="hud"><button class="ico" data-act="back">→</button>'+
+  var pages=Math.ceil(CFG.TOTAL_STAGES/PER_PAGE);
+  if(stagePage<0) stagePage=Math.floor((open-1)/PER_PAGE);   /* خودکار روی مرحله فعلی */
+  stagePage=clamp(stagePage,0,pages-1);
+  var from=stagePage*PER_PAGE+1, to=Math.min(CFG.TOTAL_STAGES,from+PER_PAGE-1);
+  var h='<div class="hud"><button class="ico" data-act="back">\u2192</button>'+
     '<div class="hudMid"><div class="hudTitle">مراحل</div>'+
     '<div class="hudSub">'+fa(open-1)+' مرحله باز شده از '+fa(CFG.TOTAL_STAGES)+'</div></div>'+
-    '<div class="coinBox">🪙 '+fa(S.coins)+'</div></div>'+
+    '<div class="coinBox">\ud83e\ude99 '+fa(S.coins)+'</div></div>'+
     '<div class="tabs">'+
-      '<button class="tab'+(isD?' on':'')+'" data-act="tabD">🔍 پیدا کردن تفاوت</button>'+
-      '<button class="tab'+(!isD?' on':'')+'" data-act="tabG">🖼️ حدس تصویر</button>'+
+      '<button class="tab'+(isD?' on':'')+'" data-act="tabD">\ud83d\udd0d پیدا کردن تفاوت</button>'+
+      '<button class="tab'+(!isD?' on':'')+'" data-act="tabG">\ud83d\uddbc\ufe0f حدس تصویر</button>'+
     '</div><div class="grid">';
-  var i,st,cls,key;
-  for(i=1;i<=CFG.TOTAL_STAGES;i++){
+  var i,st,cls,key,lock;
+  for(i=from;i<=to;i++){
     key=(isD?'d':'g')+i;
     st=S.stars[key]||0;
+    lock=i>open;
     cls='cell';
-    if(i>open) cls+=' lock';
+    if(lock) cls+=' lock';
     else if(st>0) cls+=' done';
     else if(i===open) cls+=' next';
     if(i%10===0) cls+=' sp';
     h+='<button class="'+cls+'" data-act="stage" data-n="'+i+'">'+
-       (i>open?'🔒':fa(i))+
-       (st?'<span class="st">'+'★★★'.slice(0,st)+'</span>':'')+
+       (lock?'\ud83d\udd12':fa(i))+
+       (st?'<span class="st">'+'\u2605\u2605\u2605'.slice(0,st)+'</span>':'')+
        '</button>';
   }
   h+='</div>';
+  /* نوار صفحه‌بندی — هیچ‌وقت اسکرول لازم نمی‌شود */
+  h+='<div class="pager">'+
+     '<button class="ico'+(stagePage>=pages-1?' off':'')+'" data-act="pgNext">\u2039</button>'+
+     '<div class="pgDots">';
+  for(i=0;i<pages;i++) h+='<i class="'+(i===stagePage?'on':'')+'" data-act="pgGo" data-p="'+i+'"></i>';
+  h+='</div>'+
+     '<div class="pgLbl">'+fa(from)+' تا '+fa(to)+'</div>'+
+     '<button class="ico'+(stagePage<=0?' off':'')+'" data-act="pgPrev">\u203a</button>'+
+     '</div>';
   s.innerHTML=h;
   wire(s);
 };
@@ -2151,40 +1936,40 @@ RENDER.profile=function(){
   var s=$('#s-profile');
   var totalStars=0,k;
   for(k in S.stars) totalStars+=S.stars[k];
-  var h='<div class="hud"><button class="ico" data-act="back">→</button>'+
+  var h='<div class="hud"><button class="ico" data-act="back">\u2192</button>'+
     '<div class="hudMid"><div class="hudTitle">پروفایل</div>'+
     '<div class="hudSub">سطح '+fa(level())+'</div></div>'+
-    '<div class="coinBox">🪙 '+fa(S.coins)+'</div></div>'+
-    '<div class="card center">'+
-      '<div style="font-size:52px;line-height:1.1">'+S.avatar+'</div>'+
-      '<div style="font-size:20px;font-weight:700">'+esc(S.name)+'</div>'+
-      '<div class="dim" style="font-size:13px">سطح '+fa(level())+' · '+fa(S.score)+' امتیاز</div>'+
-      '<div class="bar" style="margin-top:8px"><i style="width:'+Math.round(levelProg()*100)+'%"></i></div>'+
-      '<div class="dim" style="font-size:11px;margin-top:4px">تا سطح بعد: '+
-        fa(CFG.LEVEL_STEP-(S.score%CFG.LEVEL_STEP))+' امتیاز</div>'+
+    '<div class="coinBox">\ud83e\ude99 '+fa(S.coins)+'</div></div>'+
+    '<div class="card"><div class="row">'+
+      '<div style="font-size:40px;line-height:1">'+S.avatar+'</div>'+
+      '<div class="grow" style="min-width:0">'+
+        '<input class="inp" id="pName" maxlength="14" value="'+esc(S.name)+'">'+
+        '<div class="bar" style="margin-top:7px"><i style="width:'+
+          Math.round(levelProg()*100)+'%"></i></div>'+
+        '<div class="dim" style="font-size:10.5px;margin-top:3px">سطح '+fa(level())+
+          ' \u00b7 تا سطح بعد '+fa(CFG.LEVEL_STEP-(S.score%CFG.LEVEL_STEP))+' امتیاز</div>'+
+      '</div>'+
+      '<button class="btn g sm" data-act="saveName" style="flex:0 0 auto">ذخیره</button>'+
     '</div>'+
-    '<div class="card mt"><div style="font-weight:700;margin-bottom:6px">نام تو</div>'+
-      '<input class="inp" id="pName" maxlength="14" value="'+esc(S.name)+'">'+
-      '<div style="font-weight:700;margin:10px 0 2px">آواتار</div><div class="avPick">';
+    '<div class="avPick">';
   AVATARS.forEach(function(a){
     h+='<button class="'+(a===S.avatar?'on':'')+'" data-act="av" data-a="'+a+'">'+a+'</button>';
   });
-  h+='</div><button class="btn g mt" data-act="saveName">ذخیره تغییرات</button></div>'+
-    '<div class="card mt">'+
-      '<div class="kv"><span class="k">🎖 سطح</span><span>'+fa(level())+'</span></div>'+
-      '<div class="kv"><span class="k">⭐ امتیاز کل</span><span>'+fa(S.score)+'</span></div>'+
-      '<div class="kv"><span class="k">🏅 بهترین امتیاز یک مرحله</span><span>'+fa(S.best)+'</span></div>'+
-      '<div class="kv"><span class="k">🗺 مراحل تکمیل‌شده</span><span>'+fa(S.done)+'</span></div>'+
-      '<div class="kv"><span class="k">🌟 ستاره‌ها</span><span>'+fa(totalStars)+'</span></div>'+
-      '<div class="kv"><span class="k">🪙 سکه‌ها</span><span>'+fa(S.coins)+'</span></div>'+
-      '<div class="kv"><span class="k">✅ پاسخ‌های درست</span><span>'+fa(S.correct)+'</span></div>'+
-      '<div class="kv"><span class="k">🔍 تفاوت‌های پیدا شده</span><span>'+fa(S.founds)+'</span></div>'+
-      '<div class="kv"><span class="k">❤️ جان</span><span>'+fa(S.lives)+' از '+fa(CFG.MAX_LIVES)+'</span></div>'+
-    '</div>'+
-    '<div class="card mt"><div class="row">'+
-      '<button class="btn ghost sm grow" data-act="sound">'+(S.sound?'🔊 صدا روشن':'🔇 صدا خاموش')+'</button>'+
-      '<button class="btn k sm grow" data-act="reset">🗑 شروع دوباره</button>'+
-    '</div></div><div style="height:14px"></div>';
+  h+='</div></div>'+
+    '<div class="card mt"><div class="kvGrid">'+
+      '<div class="kv2"><b>'+fa(S.score)+'</b><span>\u2b50 امتیاز کل</span></div>'+
+      '<div class="kv2"><b>'+fa(S.best)+'</b><span>\ud83c\udfc5 بهترین مرحله</span></div>'+
+      '<div class="kv2"><b>'+fa(S.done)+'</b><span>\ud83d\uddfa مرحله تمام‌شده</span></div>'+
+      '<div class="kv2"><b>'+fa(totalStars)+'</b><span>\ud83c\udf1f ستاره</span></div>'+
+      '<div class="kv2"><b>'+fa(S.correct)+'</b><span>\u2705 پاسخ درست</span></div>'+
+      '<div class="kv2"><b>'+fa(S.founds)+'</b><span>\ud83d\udd0d تفاوت پیدا شده</span></div>'+
+      '<div class="kv2"><b>'+fa(S.coins)+'</b><span>\ud83e\ude99 سکه</span></div>'+
+      '<div class="kv2"><b>'+fa(S.lives)+'/'+fa(CFG.MAX_LIVES)+'</b><span>\u2764\ufe0f جان</span></div>'+
+    '</div></div>'+
+    '<div class="row mt">'+
+      '<button class="btn ghost sm grow" data-act="sound">'+(S.sound?'\ud83d\udd0a صدا روشن':'\ud83d\udd07 صدا خاموش')+'</button>'+
+      '<button class="btn k sm grow" data-act="reset">\ud83d\uddd1 شروع دوباره</button>'+
+    '</div>';
   s.innerHTML=h; wire(s);
 };
 
@@ -2221,437 +2006,64 @@ RENDER.missions=function(){
 };
 
 /* ---------- درباره ما ---------- */
-var brandTaps=0, brandTapT=0;
 RENDER.about=function(){
-  var s=$('#s-about');
-  var doneAll=S.done, k, stars=0;
+  var s=$('#s-about'), k, stars=0;
   for(k in S.stars) stars+=S.stars[k];
   s.innerHTML=
-    '<div class="hud"><button class="ico" data-act="back">→</button>'+
+    '<div class="hud"><button class="ico" data-act="back">\u2192</button>'+
       '<div class="hudMid"><div class="hudTitle">درباره ما</div>'+
-      '<div class="hudSub">'+TEAM.game+' · نسخه '+TEAM.version+'</div></div>'+
-      '<div class="coinBox">🪙 '+fa(S.coins)+'</div></div>'+
+      '<div class="hudSub">'+TEAM.game+' \u00b7 نسخه '+TEAM.version+'</div></div>'+
+      '<div class="coinBox">\ud83e\ude99 '+fa(S.coins)+'</div></div>'+
     '<div class="card"><div class="brand">'+
       '<div class="brandMark" id="brandMark">SMRx</div>'+
       '<div class="brandName">تیم '+TEAM.name+'</div>'+
-      '<div class="dim" style="font-size:13px">سازنده بازی «'+TEAM.game+'»</div>'+
-      '<div class="tagList"><span>🎮 بازی‌سازی</span><span>📱 اندروید</span>'+
-        '<span>🎨 طراحی رابط</span><span>🇮🇷 ساخت ایران</span></div>'+
+      '<div class="dim" style="font-size:12.5px">سازنده بازی «'+TEAM.game+'»</div>'+
+      '<div class="tagList"><span>\ud83c\udfae بازی‌سازی</span><span>\ud83d\udcf1 اندروید</span>'+
+        '<span>\ud83c\udfa8 طراحی رابط</span></div>'+
     '</div></div>'+
-    '<div class="card mt" style="text-align:right;line-height:2;font-size:14px">'+
-      '«'+TEAM.game+'» یک بازی پازل و سرگرمی فارسی است که برای گوشی‌های اندرویدی '+
-      'ساخته شده. هدف ما ساختن بازی‌های ساده، شاد و کاملاً فارسی است که همه '+
-      'بتوانند در چند ثانیه یاد بگیرند و ساعت‌ها با آن سرگرم شوند.'+
+    '<div class="card mt" style="text-align:right;line-height:1.9;font-size:13px">'+
+      'هدف ما ساختن بازی‌های ساده، شاد و کاملاً فارسی است که همه بتوانند در چند '+
+      'ثانیه یاد بگیرند و ساعت‌ها با آن سرگرم شوند.'+
     '</div>'+
-    '<div class="card mt">'+
-      '<div class="kv"><span class="k">🎮 نام بازی</span><span>'+TEAM.game+'</span></div>'+
-      '<div class="kv"><span class="k">👥 تیم سازنده</span><span>'+TEAM.name+'</span></div>'+
-      '<div class="kv"><span class="k">🔖 نسخه</span><span>'+TEAM.version+'</span></div>'+
-      '<div class="kv"><span class="k">🗺 مراحل</span><span>'+fa(CFG.TOTAL_STAGES*2)+' مرحله</span></div>'+
-      '<div class="kv"><span class="k">🏁 مراحل تمام‌شده تو</span><span>'+fa(doneAll)+'</span></div>'+
-      '<div class="kv"><span class="k">🌟 ستاره‌های تو</span><span>'+fa(stars)+'</span></div>'+
-      '<div class="kv"><span class="k">📶 اینترنت</span><span>لازم نیست</span></div>'+
-    '</div>'+
-    '<div class="card mt center dim" style="font-size:12px;line-height:2">'+
-      'با تشکر از تو که بازی ما را انتخاب کردی 💛<br>'+
-      'برای پیشنهاد و گزارش مشکل با تیم '+TEAM.name+' در تماس باش.'+
-    '</div>'+
-    '<div style="height:16px"></div>';
+    '<div class="card mt"><div class="kvGrid">'+
+      '<div class="kv2"><b>'+fa(CFG.TOTAL_STAGES*2)+'</b><span>\ud83d\uddfa کل مراحل</span></div>'+
+      '<div class="kv2"><b>'+fa(S.done)+'</b><span>\ud83c\udfc1 تمام‌شده تو</span></div>'+
+      '<div class="kv2"><b>'+fa(stars)+'</b><span>\ud83c\udf1f ستاره‌های تو</span></div>'+
+      '<div class="kv2"><b>'+TEAM.version+'</b><span>\ud83d\udd16 نسخه</span></div>'+
+    '</div></div>'+
+    '<div class="card mt center dim" style="font-size:11.5px;line-height:1.9">'+
+      'با تشکر از تو که بازی ما را انتخاب کردی \ud83d\udc9b<br>'+
+      'بازی به اینترنت نیاز ندارد و هیچ اطلاعاتی از تو نمی‌گیرد.'+
+    '</div>';
   wire(s);
-  /* ورود مخفی به پنل مدیریت: ۷ بار لمس نشان تیم */
-  var mark=$('#brandMark',s);
-  if(mark) mark.addEventListener('click',function(){
-    var now=Date.now();
-    if(now-brandTapT>1500) brandTaps=0;
-    brandTapT=now; brandTaps++;
-    if(brandTaps>=3 && brandTaps<7) toast(fa(7-brandTaps)+' لمس دیگر…',700);
-    if(brandTaps>=7){ brandTaps=0; Sfx.unlockLvl(); adminGate(); }
-  });
 };
 
-/* ============================================================
-   ۱۴-۱) پنل مدیریت
-   ------------------------------------------------------------
-   ورود: صفحه «درباره ما» ← ۷ بار لمس نشان تیم
-   ============================================================ */
-var adminTab='dash', itemFilter='', itemCat='';
-var A_TABS=[['dash','📊 داشبورد'],['player','👤 بازیکن'],['stages','🗺 مراحل'],
-            ['econ','💰 اقتصاد'],['diffc','🎚 سختی'],['content','🖼 محتوا'],
-            ['tasks','🎯 مأموریت'],['tools','🧪 ابزار'],['sec','🛡 امنیت']];
-
-/* --- صفحه‌کلید رمز --- */
-function pinPrompt(o){
-  var buf='';
-  var pad='';
-  var keys=['۱','۲','۳','۴','۵','۶','۷','۸','۹','⌫','۰','✓'];
-  var vals=['1','2','3','4','5','6','7','8','9','del','0','ok'];
-  var i;
-  for(i=0;i<keys.length;i++) pad+='<button data-k="'+vals[i]+'">'+keys[i]+'</button>';
-  var m=modal({emoji:'🔐',title:o.title,dismiss:false,
-    body:'<div class="dim" style="font-size:12.5px;line-height:1.9">'+o.sub+'</div>'+
-      '<div class="pinBox" id="pinDots"></div>'+
-      '<div class="keypad" id="pinPad">'+pad+'</div>'+
-      (o.link?'<button class="btn ghost sm" style="margin-top:9px" id="pinLink">'+o.link+'</button>':''),
-    buttons:[{t:'انصراف',cls:'ghost',fn:function(){ if(o.onCancel) o.onCancel(); }}]});
-  function dots(){
-    var h='',j;
-    for(j=0;j<8;j++) h+='<i class="'+(j<buf.length?'on':'')+'"></i>';
-    $('#pinDots',m).innerHTML=h;
+/* ------------------------------------------------------------------
+   اگر محتوای یک صفحه از ارتفاع گوشی بیشتر شود، کمی کوچک می‌شود تا
+   کامل جا شود. این‌طوری هیچ صفحه‌ای اسکرول ندارد.
+   صفحه‌های بازی (تفاوت و حدس) خودشان دقیق اندازه می‌شوند.
+   ------------------------------------------------------------------ */
+var FITTED={home:1,stages:1,profile:1,missions:1,about:1,board:1};
+function fitScreen(name){
+  if(!FITTED[name]) return;
+  var sc=$('#s-'+name);
+  if(!sc) return;
+  var box=sc.firstElementChild;
+  if(!box || box.className!=='fitBox'){
+    box=el('div','fitBox');
+    while(sc.firstChild) box.appendChild(sc.firstChild);
+    sc.appendChild(box);
   }
-  dots();
-  $$('#pinPad button',m).forEach(function(b){
-    b.addEventListener('click',function(){
-      var k=b.getAttribute('data-k');
-      Sfx.tap();
-      if(k==='del'){ buf=buf.slice(0,-1); dots(); return; }
-      if(k==='ok'){
-        if(buf.length<4){ toast('رمز حداقل ۴ رقم باشد'); Sfx.wrong(); return; }
-        var val=buf; buf=''; dots();
-        $('#pinPad',m).innerHTML='<div class="dim" style="grid-column:1/-1;padding:14px">بررسی…</div>';
-        setTimeout(function(){ o.onSubmit(val); },30);
-        return;
-      }
-      if(buf.length>=8) return;
-      buf+=k; dots();
-    });
-  });
-  if(o.link) $('#pinLink',m).addEventListener('click',function(){ Sfx.tap(); o.onLink(); });
-  return m;
-}
-function adminGate(){
-  if(SEC.open()){ go('admin'); return; }
-  if(!SEC.isSet()){ adminSetup(); return; }
-  var wait=SEC.lockedFor();
-  if(wait>0){
-    modal({emoji:'⛔',title:'ورود قفل است',
-      body:'<div class="warnBox">به دلیل تلاش‌های ناموفق، ورود موقتاً قفل شده است.<br>'+
-        'زمان باقی‌مانده: <b id="lockCt">'+mmss(wait/1000)+'</b></div>',
-      buttons:[{t:'باشه',cls:'ghost'}]});
-    return;
-  }
-  pinPrompt({
-    title:'ورود به پنل مدیریت',
-    sub:'رمز عبور مدیر را وارد کن.'+(SEC.fails()?'<br>تلاش ناموفق: '+fa(SEC.fails()):''),
-    link:'رمز را فراموش کرده‌ام',
-    onLink:function(){ closeModal(); adminRecover(); },
-    onSubmit:function(pin){
-      var r=SEC.check(pin);
-      closeModal();
-      if(r==='ok'){ Sfx.win(); toast('خوش آمدی مدیر 👑'); go('admin'); }
-      else if(r==='lock'){ Sfx.wrong(); adminGate(); }
-      else if(r==='wiped'){
-        Sfx.lose();
-        modal({emoji:'🧹',title:'پاک‌سازی امنیتی',
-          body:'<div class="warnBox">به دلیل تلاش‌های ناموفق زیاد، رمز مدیر پاک شد. '+
-            'دفعه بعد باید رمز تازه بسازی.</div>',buttons:[{t:'باشه',cls:'ghost'}]});
-      } else {
-        Sfx.wrong(); buzzz(80);
-        var w=SEC.lockedFor();
-        toast(w>0?'رمز اشتباه! قفل تا '+mmss(w/1000):'رمز اشتباه است!');
-      }
-    }
-  });
-}
-function adminSetup(){
-  pinPrompt({
-    title:'ساخت رمز مدیر',
-    sub:'یک رمز ۴ تا ۸ رقمی بساز. این رمز فقط روی همین گوشی ذخیره می‌شود و '+
-        'به صورت رمزنگاری‌شده (PBKDF2) نگهداری می‌گردد.',
-    onSubmit:function(pin1){
-      closeModal();
-      pinPrompt({
-        title:'تکرار رمز',
-        sub:'برای اطمینان، همان رمز را دوباره وارد کن.',
-        onSubmit:function(pin2){
-          closeModal();
-          if(pin1!==pin2){ Sfx.wrong(); toast('دو رمز یکی نیستند!'); adminSetup(); return; }
-          var rec=SEC.setPin(pin1);
-          Sfx.win();
-          modal({emoji:'🗝️',title:'کد بازیابی',dismiss:false,
-            body:'<div class="warnBox">این کد را جایی امن یادداشت کن. اگر رمز را فراموش کردی، '+
-              'تنها راه بازکردن پنل همین کد است و دیگر نشان داده نمی‌شود.</div>'+
-              '<div class="sec mono" style="margin-top:9px;font-size:17px;text-align:center">'+rec+'</div>',
-            buttons:[{t:'یادداشت کردم، ادامه',cls:'p',fn:function(){ adminGate(); }}]});
-        }
-      });
-    }
-  });
-}
-function adminRecover(){
-  var m=modal({emoji:'🗝️',title:'بازیابی با کد پشتیبان',
-    body:'<div class="dim" style="font-size:12.5px">کد ۱۰ حرفی که هنگام ساخت رمز گرفتی را وارد کن.</div>'+
-      '<input class="inp mono" id="recIn" style="margin-top:9px;text-align:center" maxlength="12" placeholder="XXXXXXXXXX">',
-    buttons:[
-      {t:'بازیابی',cls:'p',keep:true,fn:function(){
-        var v=$('#recIn',m).value;
-        if(SEC.recover(v)){ closeModal(); Sfx.win(); toast('رمز پاک شد، رمز تازه بساز'); adminSetup(); }
-        else { Sfx.wrong(); toast('کد درست نیست!'); }
-      }},
-      {t:'انصراف',cls:'ghost'}
-    ]});
-}
-
-/* --- ابزارهای ساخت فرم --- */
-function fr(label,inp){ return '<div class="frow"><span>'+label+'</span>'+inp+'</div>'; }
-function ni(id,val,min,max,step){
-  return '<input class="inp" id="'+id+'" type="number" value="'+val+'" min="'+min+
-         '" max="'+max+'" step="'+(step||1)+'">';
-}
-function ti(id,val,ph){
-  return '<input class="inp wide" id="'+id+'" value="'+esc(val)+'" placeholder="'+(ph||'')+'">';
-}
-function gv(id,def){
-  var e=$('#'+id);
-  if(!e) return def;
-  var v=parseFloat(String(e.value).replace(/[۰-۹]/g,function(d){return '۰۱۲۳۴۵۶۷۸۹'.indexOf(d);}));
-  return isNaN(v)?def:v;
-}
-
-RENDER.admin=function(){
-  if(!SEC.open()){ go('about',false); adminGate(); return; }
-  SEC.touch();
-  var s=$('#s-admin'), i;
-  var tabs='';
-  for(i=0;i<A_TABS.length;i++)
-    tabs+='<button class="aTab'+(adminTab===A_TABS[i][0]?' on':'')+'" data-act="aTab" data-t="'+
-          A_TABS[i][0]+'">'+A_TABS[i][1]+'</button>';
-  s.innerHTML=
-    '<div class="hud"><button class="ico" data-act="aExit">→</button>'+
-      '<div class="hudMid"><div class="hudTitle">🛠 پنل مدیریت</div>'+
-      '<div class="hudSub">'+TEAM.game+' · تیم '+TEAM.name+'</div></div>'+
-      '<button class="ico" data-act="aLock">🔒</button></div>'+
-    '<div class="aTabs">'+tabs+'</div>'+
-    '<div class="aBody" id="aBody"></div>';
-  $('#aBody',s).innerHTML=adminBody();
-  wire(s);
-  adminExtra();
-};
-function adminBody(){
-  var t=adminTab, h='', i, k;
-  if(t==='dash'){
-    var stars=0; for(k in S.stars) stars+=S.stars[k];
-    h+='<div class="sec"><h3>📊 یک نگاه کلی</h3><div class="grid3">'+
-       '<div class="kpi"><b style="color:var(--gold)">'+fa(S.coins)+'</b><span>سکه</span></div>'+
-       '<div class="kpi"><b style="color:var(--cyan)">'+fa(S.score)+'</b><span>امتیاز</span></div>'+
-       '<div class="kpi"><b style="color:var(--pink)">'+fa(level())+'</b><span>سطح</span></div>'+
-       '<div class="kpi"><b>'+fa(S.done)+'</b><span>مرحله تمام‌شده</span></div>'+
-       '<div class="kpi"><b>'+fa(stars)+'</b><span>ستاره</span></div>'+
-       '<div class="kpi"><b>'+fa(S.lives)+'/'+fa(CFG.MAX_LIVES)+'</b><span>جان</span></div>'+
-       '<div class="kpi"><b>'+fa(S.correct)+'</b><span>پاسخ درست</span></div>'+
-       '<div class="kpi"><b>'+fa(S.founds)+'</b><span>تفاوت پیدا شده</span></div>'+
-       '<div class="kpi"><b>'+fa(ITEMS.length)+'</b><span>تصویر در بانک</span></div>'+
-       '</div></div>';
-    h+='<div class="sec"><h3>⚡ کارهای سریع</h3><div class="grid2">'+
-       '<button class="btn p sm" data-act="aCoins" data-v="1000">+۱۰۰۰ سکه</button>'+
-       '<button class="btn c sm" data-act="aLives">جان کامل</button>'+
-       '<button class="btn v sm" data-act="aUnlock" data-v="all">باز کردن همه مراحل</button>'+
-       '<button class="btn g sm" data-act="aScore" data-v="1000">+۱۰۰۰ امتیاز</button>'+
-       '</div></div>';
-    h+='<div class="sec"><h3>🧩 وضعیت بخش‌ها</h3>';
-    var fk={leaderboard:'رتبه‌بندی',shop:'فروشگاه',buyCoins:'خرید سکه',rewardedAds:'تبلیغات جایزه‌ای',
-            online:'بازی آنلاین',duel:'مسابقه دو نفره',events:'رویدادها',weekly:'مراحل هفتگی',
-            tournament:'تورنمنت',friends:'دوستان'};
-    for(k in fk) h+='<div class="frow"><span>'+fk[k]+'</span><span style="font-size:12px">'+
-      (FEATURES[k]?'<b style="color:var(--green)">فعال</b>':'<span class="dim">نیازمند سرور · خاموش</span>')+'</span></div>';
-    h+='<div class="dim" style="font-size:11.5px;margin-top:8px;line-height:1.9">'+
-       'این بخش‌ها به سرور نیاز دارند و فعلاً در صفحه اصلی نشان داده نمی‌شوند. '+
-       'برای فعال کردن، در فایل بازی مقدار FEATURES را true کن.</div></div>';
-  }
-  else if(t==='player'){
-    h+='<div class="sec"><h3>👤 مشخصات بازیکن</h3>'+
-       fr('نام',ti('pn',S.name))+
-       fr('سکه',ni('pc',S.coins,0,99999999))+
-       fr('امتیاز',ni('ps',S.score,0,99999999))+
-       fr('جان',ni('pl',S.lives,0,CFG.MAX_LIVES))+
-       fr('مراحل تمام‌شده',ni('pd',S.done,0,9999))+
-       fr('پاسخ‌های درست',ni('pcr',S.correct,0,99999))+
-       fr('تفاوت‌های پیدا شده',ni('pf',S.founds,0,999999))+
-       '<button class="btn g mt" data-act="aPlayer">ذخیره مشخصات</button></div>';
-    h+='<div class="sec"><h3>🖼 آواتار</h3><div class="avPick">';
-    AVATARS.forEach(function(a){
-      h+='<button class="'+(a===S.avatar?'on':'')+'" data-act="av" data-a="'+a+'">'+a+'</button>';
-    });
-    h+='</div></div>';
-    h+='<div class="sec danger"><h3>⚠️ ناحیه خطر</h3>'+
-       '<button class="btn k sm" data-act="aResetPlayer">پاک کردن پیشرفت بازیکن</button></div>';
-  }
-  else if(t==='stages'){
-    h+='<div class="sec"><h3>🗺 مرحله باز شده</h3>'+
-       fr('پیدا کردن تفاوت',ni('sd',S.diffStage,1,CFG.TOTAL_STAGES))+
-       fr('حدس تصویر',ni('sg',S.guessStage,1,CFG.TOTAL_STAGES))+
-       '<button class="btn g mt" data-act="aStages">ذخیره</button>'+
-       '<div class="grid2 mt">'+
-       '<button class="btn v sm" data-act="aUnlock" data-v="all">باز کردن همه</button>'+
-       '<button class="btn ghost sm" data-act="aUnlock" data-v="reset">قفل کردن همه</button>'+
-       '</div></div>';
-    h+='<div class="sec"><h3>🎮 تست سریع مرحله</h3>'+
-       fr('شماره مرحله',ni('tn',1,1,CFG.TOTAL_STAGES))+
-       '<div class="grid2 mt">'+
-       '<button class="btn c sm" data-act="aTest" data-m="diff">اجرای تفاوت</button>'+
-       '<button class="btn b sm" data-act="aTest" data-m="guess">اجرای حدس</button></div>'+
-       '<div class="dim" style="font-size:11.5px;margin-top:8px">'+
-       'مرحله بدون توجه به قفل بودن اجرا می‌شود.</div></div>';
-    h+='<div class="sec danger"><h3>⚠️ ستاره‌ها</h3>'+
-       '<button class="btn k sm" data-act="aClearStars">پاک کردن همه ستاره‌ها</button></div>';
-  }
-  else if(t==='econ'){
-    h+='<div class="sec"><h3>💰 هزینه‌ها <span class="dim">(سکه)</span></h3>'+
-       fr('راهنمای تفاوت',ni('ehint',CFG.HINT_COST,0,100000))+
-       fr('حذف یک گزینه',ni('efifty',CFG.FIFTY_COST,0,100000))+
-       fr('واضح‌تر کردن تصویر',ni('eclear',CFG.CLEAR_COST,0,100000))+
-       fr('ادامه بعد از شکست',ni('erev',CFG.REVIVE_COST,0,100000))+
-       fr('پر کردن جان‌ها',ni('eref',CFG.REFILL_COST,0,100000))+
-       '</div>';
-    h+='<div class="sec"><h3>❤️ جان و مراحل</h3>'+
-       fr('بیشترین جان',ni('emax',CFG.MAX_LIVES,1,20))+
-       fr('شارژ هر جان (دقیقه)',ni('elife',Math.round(CFG.LIFE_MS/60000),1,600))+
-       fr('تعداد کل مراحل',ni('etot',CFG.TOTAL_STAGES,10,999))+
-       fr('امتیاز لازم هر سطح',ni('elvl',CFG.LEVEL_STEP,50,100000))+
-       '</div>';
-    h+='<div class="sec"><h3>✖️ ضریب جایزه</h3>'+
-       fr('ضریب سکه',ni('mcoin',TUNE.mul.coin,0.1,20,0.1))+
-       fr('ضریب امتیاز',ni('mscore',TUNE.mul.score,0.1,20,0.1))+
-       '<button class="btn g mt" data-act="aEcon">ذخیره تنظیمات اقتصاد</button></div>';
-  }
-  else if(t==='diffc'){
-    var d=TUNE.d;
-    h+='<div class="sec"><h3>🎚 مرز درجه سختی</h3>'+
-       fr('پایان «آسان»',ni('de',d.e,1,999))+
-       fr('پایان «متوسط»',ni('dm',d.m,1,999))+
-       fr('پایان «سخت»',ni('dh',d.h,1,999))+
-       '</div>';
-    h+='<div class="sec"><h3>🔍 بخش پیدا کردن تفاوت</h3>'+
-       fr('زمان مرحله ۱ (ثانیه)',ni('dbt',d.baseTime,10,600))+
-       fr('کم شدن زمان در هر مرحله',ni('dtd',d.timeDrop,0,10,0.05))+
-       fr('کمترین زمان',ni('dmt',d.minTime,5,600))+
-       fr('تعداد تفاوت اولیه',ni('ddb',d.diffBase,1,10))+
-       fr('هر چند مرحله +۱ تفاوت',ni('dds',d.diffStep,1,100))+
-       fr('بیشترین تفاوت',ni('ddm',d.maxDiff,3,10))+
-       fr('تعداد شیء اولیه',ni('dp',d.props,6,16))+
-       fr('هر چند مرحله +۱ شیء',ni('dps',d.propStep,1,100))+
-       '</div>';
-    h+='<div class="sec"><h3>🖼 بخش حدس تصویر</h3>'+
-       fr('زمان مرحله ۱ (ثانیه)',ni('dgt',d.gTime,5,300))+
-       fr('کم شدن زمان در هر مرحله',ni('dgd',d.gDrop,0,5,0.01))+
-       fr('کمترین زمان',ni('dgm',d.gMin,3,300))+
-       '<button class="btn g mt" data-act="aDiff">ذخیره تنظیمات سختی</button></div>';
-    var pv=[1,25,50,75,100], c;
-    h+='<div class="sec"><h3>👁 پیش‌نمایش</h3>';
-    for(i=0;i<pv.length;i++){
-      c=diffCfg(pv[i]);
-      h+='<div class="frow"><span>مرحله '+fa(pv[i])+'</span><span style="font-size:12px">'+
-         DIFF_NAMES[c.d]+' · '+fa(c.diffs)+' تفاوت · '+fa(c.time)+' ثانیه</span></div>';
-    }
-    h+='</div>';
-  }
-  else if(t==='content'){
-    var cats='<option value="">همه دسته‌ها</option>';
-    for(k in CATS) cats+='<option value="'+k+'"'+(itemCat===k?' selected':'')+'>'+CATS[k]+
-      ' ('+fa((BY_CAT[k]||[]).length)+')</option>';
-    h+='<div class="sec"><h3>➕ تصویر تازه</h3>'+
-       '<div class="frow"><span>ایموجی</span><input class="inp" id="niE" maxlength="8" placeholder="🍉"></div>'+
-       '<div class="frow"><span>نام</span><input class="inp wide" id="niN" maxlength="24" placeholder="هندوانه"></div>'+
-       '<div class="frow"><span>دسته</span><select class="inp" id="niC">';
-    for(k in CATS) h+='<option value="'+k+'">'+CATS[k]+'</option>';
-    h+='</select></div><button class="btn g mt" data-act="aAddItem">افزودن به بانک</button></div>';
-    h+='<div class="sec"><h3>🖼 بانک تصویرها <span class="dim">('+fa(ITEMS.length)+' تصویر)</span></h3>'+
-       '<div class="frow"><span>جست‌وجو</span><input class="inp wide" id="fSearch" value="'+
-       esc(itemFilter)+'" placeholder="نام تصویر…"></div>'+
-       '<div class="frow"><span>دسته</span><select class="inp" id="fCat">'+cats+'</select></div>'+
-       '<button class="btn ghost sm mt" data-act="aFilter">اعمال فیلتر</button>'+
-       '<div style="margin-top:10px">';
-    var shown=0;
-    for(i=0;i<ITEMS.length;i++){
-      var it=ITEMS[i];
-      if(itemCat && it[2]!==itemCat) continue;
-      if(itemFilter && it[1].indexOf(itemFilter)<0) continue;
-      if(shown>=60){ h+='<div class="dim center" style="font-size:12px">… و '+
-        fa(ITEMS.length-shown)+' مورد دیگر (با فیلتر کم‌ترش کن)</div>'; break; }
-      shown++;
-      h+='<div class="itemRow"><span class="e">'+it[0]+'</span>'+
-         '<span class="n">'+esc(it[1])+'</span>'+
-         '<span class="c">'+CATS[it[2]]+'</span>'+
-         '<button class="iconBtn" data-act="aEditItem" data-i="'+i+'">✏️</button>'+
-         '<button class="iconBtn" data-act="aDelItem" data-i="'+i+'">🗑</button></div>';
-    }
-    if(!shown) h+='<div class="dim center" style="font-size:13px;padding:10px">موردی پیدا نشد</div>';
-    h+='</div></div>';
-    h+='<div class="sec danger"><h3>⚠️ بازگردانی</h3>'+
-       '<button class="btn k sm" data-act="aResetItems">برگرداندن بانک به حالت اولیه</button></div>';
-  }
-  else if(t==='tasks'){
-    h+='<div class="sec"><h3>🎯 مأموریت‌های روزانه</h3>';
-    for(i=0;i<MISSIONS.length;i++){
-      h+='<div class="sec" style="background:rgba(0,0,0,.18);margin:8px 0">'+
-         '<div style="font-weight:700;font-size:13px">'+MISSIONS[i].e+' '+MISSIONS[i].t+'</div>'+
-         fr('هدف',ni('mg'+i,MISSIONS[i].goal,1,999))+
-         fr('جایزه سکه',ni('mc'+i,MISSIONS[i].coins,0,99999))+
-         fr('جایزه امتیاز',ni('ms'+i,MISSIONS[i].score,0,99999))+
-         '</div>';
-    }
-    h+='<button class="btn g" data-act="aMissions">ذخیره مأموریت‌ها</button></div>';
-    h+='<div class="sec"><h3>🎁 پاداش روزانه (۷ روز)</h3>';
-    for(i=0;i<7;i++) h+=fr('روز '+fa(i+1)+' '+DAILY[i].e,ni('dr'+i,DAILY[i].c,0,999999));
-    h+='<button class="btn g mt" data-act="aDaily">ذخیره پاداش‌ها</button></div>';
-  }
-  else if(t==='tools'){
-    h+='<div class="sec"><h3>💾 پشتیبان‌گیری</h3>'+
-       '<div class="dim" style="font-size:12px;line-height:1.9">متن زیر همه اطلاعات بازی است. '+
-       'آن را کپی و جایی امن نگه دار.</div>'+
-       '<textarea class="inp mono" id="bkOut" rows="5" readonly style="width:100%;margin-top:8px;'+
-       'user-select:text;-webkit-user-select:text"></textarea>'+
-       '<button class="btn c sm mt" data-act="aBackup">ساخت فایل پشتیبان</button></div>';
-    h+='<div class="sec"><h3>📥 بازگردانی</h3>'+
-       '<textarea class="inp mono" id="bkIn" rows="4" placeholder="متن پشتیبان را اینجا بچسبان…" '+
-       'style="width:100%;user-select:text;-webkit-user-select:text"></textarea>'+
-       '<button class="btn v sm mt" data-act="aRestore">بازگردانی اطلاعات</button>'+
-       '<div class="dim" style="font-size:11.5px;margin-top:6px">درستی فایل با کد کنترلی '+
-       'SHA-256 بررسی می‌شود.</div></div>';
-    h+='<div class="sec"><h3>🎨 پیش‌نمایش صحنه</h3>'+
-       fr('شماره مرحله',ni('pvn',12,1,CFG.TOTAL_STAGES))+
-       '<button class="btn b sm mt" data-act="aPreview">ساخت پیش‌نمایش</button>'+
-       '<div id="pvBox" style="margin-top:9px"></div></div>';
-    h+='<div class="sec danger"><h3>⚠️ بازنشانی</h3><div class="grid2">'+
-       '<button class="btn k sm" data-act="aResetTune">بازگرداندن تنظیمات</button>'+
-       '<button class="btn k sm" data-act="aFactory">پاک کردن کامل بازی</button></div></div>';
-  }
-  else if(t==='sec'){
-    var D=SEC.data(), lk=SEC.lockedFor();
-    h+='<div class="sec"><h3>🛡 وضعیت امنیت</h3>'+
-       '<div class="frow"><span>رمز مدیر</span><span>'+(SEC.isSet()?'✅ فعال':'❌ تعیین نشده')+'</span></div>'+
-       '<div class="frow"><span>تلاش‌های ناموفق</span><span>'+fa(D.fails)+'</span></div>'+
-       '<div class="frow"><span>وضعیت قفل</span><span>'+(lk>0?'⛔ '+mmss(lk/1000):'باز')+'</span></div>'+
-       '<div class="frow"><span>آخرین ورود</span><span style="font-size:12px">'+
-         (D.lastLogin?new Date(D.lastLogin).toLocaleString('fa-IR'):'—')+'</span></div>'+
-       '</div>';
-    h+='<div class="sec"><h3>⚙️ تنظیمات</h3>'+
-       fr('بستن نشست بعد از (دقیقه)',ni('stmo',D.timeout,1,60))+
-       '<div class="frow"><span>پاک کردن رمز بعد از ۱۰ تلاش ناموفق</span>'+
-       '<button class="btn '+(D.wipe?'g':'ghost')+' sm" data-act="aWipe" style="width:86px;flex:0 0 86px">'+
-       (D.wipe?'روشن':'خاموش')+'</button></div>'+
-       '<div class="grid2 mt">'+
-       '<button class="btn g sm" data-act="aSecSave">ذخیره</button>'+
-       '<button class="btn v sm" data-act="aChangePin">تغییر رمز</button></div></div>';
-    h+='<div class="sec"><h3>📜 گزارش کارها <span class="dim">('+fa(D.log.length)+')</span></h3>';
-    var lg=D.log.slice(-40).reverse();
-    if(!lg.length) h+='<div class="dim center" style="font-size:12px">هنوز چیزی ثبت نشده</div>';
-    for(i=0;i<lg.length;i++)
-      h+='<div class="logLine"><span>'+new Date(lg[i].t).toLocaleString('fa-IR')+'</span>'+
-         '<b>'+esc(lg[i].a)+'</b><span>'+esc(lg[i].d)+'</span></div>';
-    h+='<button class="btn ghost sm mt" data-act="aClearLog">پاک کردن گزارش</button></div>';
-    h+='<div class="sec"><h3>ℹ️ درباره امنیت این پنل</h3>'+
-       '<div class="dim" style="font-size:11.5px;line-height:2;text-align:right">'+
-       'رمز به صورت خام ذخیره نمی‌شود؛ با PBKDF2-SHA256 و ۱۵۰۰۰ تکرار و نمک تصادفی '+
-       'چکیده می‌شود. با این حال چون بازی روی گوشی کاربر اجرا می‌شود، این محافظت '+
-       'در برابر کسی که فایل برنامه را باز کند مطلق نیست. برای امنیت کامل، مدیریت '+
-       'باید روی سرور انجام شود.</div></div>';
-  }
-  return h;
-}
-/* بخش‌هایی که بعد از رسم به کد جاوااسکریپت نیاز دارند */
-function adminExtra(){
-  if(adminTab==='tools'){
-    var o=$('#bkOut'); if(o) o.value='';
+  box.style.transform='none';
+  box.style.width='100%';
+  var have=box.clientHeight, H=box.scrollHeight, k=1, i;
+  if(have<60) return;
+  for(i=0;i<3;i++){
+    if(H*k<=have-1) break;
+    k=Math.max(0.55,(have-1)/H);
+    box.style.transform='scale('+k.toFixed(4)+')';
+    box.style.width=(100/k).toFixed(3)+'%';
+    H=box.scrollHeight;          /* عرض عوض شده، دوباره اندازه بگیر */
   }
 }
 
@@ -2662,14 +2074,17 @@ var ACT={
   play:function(){ if(S.lastMode==='guess') startGuess(S.guessStage); else startDiff(S.diffStage); },
   diff:function(){ startDiff(S.diffStage); },
   guess:function(){ startGuess(S.guessStage); },
-  stages:function(){ go('stages'); },
+  stages:function(){ stagePage=-1; go('stages'); },
   board:function(){ go('board'); },
   about:function(){ go('about'); },
   profile:function(){ go('profile'); },
   missions:function(){ go('missions'); },
   daily:function(){ dailyModal(); },
-  tabD:function(){ stagesTab='diff'; RENDER.stages(); },
-  tabG:function(){ stagesTab='guess'; RENDER.stages(); },
+  tabD:function(){ stagesTab='diff'; stagePage=-1; RENDER.stages(); },
+  tabG:function(){ stagesTab='guess'; stagePage=-1; RENDER.stages(); },
+  pgPrev:function(){ if(stagePage>0){ stagePage--; RENDER.stages(); } },
+  pgNext:function(){ stagePage++; RENDER.stages(); },
+  pgGo:function(b){ stagePage=+b.getAttribute('data-p'); RENDER.stages(); },
   stage:function(b){
     var n=+b.getAttribute('data-n');
     var open=(stagesTab==='diff')?S.diffStage:S.guessStage;
@@ -2699,7 +2114,6 @@ var ACT={
     toast('جایزه گرفتی! '+fa(m.coins)+' 🪙');
     RENDER.missions();
   },
-  admin:function(){ adminGate(); },
   reset:function(){
     modal({emoji:'⚠️',title:'مطمئنی؟',
       body:'<div class="dim">همه پیشرفت، سکه‌ها و امتیازها پاک می‌شود.</div>',
@@ -2714,245 +2128,13 @@ var ACT={
   }
 };
 
-/* ---------- کارهای پنل مدیریت ---------- */
-function aDone(msg,logAct,logDet){
-  saveNow(); tuneSave(); tuneApply();
-  if(logAct) SEC.log(logAct,logDet||'');
-  toast(msg||'ذخیره شد ✓'); Sfx.coin();
-  RENDER.admin();
-}
-ACT.aTab=function(b){ adminTab=b.getAttribute('data-t'); SEC.touch(); RENDER.admin(); };
-ACT.aExit=function(){ go('about',false); };
-ACT.aLock=function(){ SEC.lockNow(); toast('پنل قفل شد 🔒'); go('about',false); };
-ACT.aCoins=function(b){ addCoins(+b.getAttribute('data-v')); aDone('سکه اضافه شد','افزودن سکه',b.getAttribute('data-v')); };
-ACT.aScore=function(b){ S.score+=+b.getAttribute('data-v'); aDone('امتیاز اضافه شد','افزودن امتیاز',b.getAttribute('data-v')); };
-ACT.aLives=function(){ S.lives=CFG.MAX_LIVES; S.lifeTs=Date.now(); aDone('جان‌ها پر شد','پر کردن جان'); };
-ACT.aPlayer=function(){
-  var n=($('#pn').value||'').trim();
-  if(n) S.name=n.slice(0,14);
-  S.coins=Math.max(0,gv('pc',S.coins)|0);
-  S.score=Math.max(0,gv('ps',S.score)|0);
-  S.lives=clamp(gv('pl',S.lives)|0,0,CFG.MAX_LIVES);
-  S.done=Math.max(0,gv('pd',S.done)|0);
-  S.correct=Math.max(0,gv('pcr',S.correct)|0);
-  S.founds=Math.max(0,gv('pf',S.founds)|0);
-  aDone('مشخصات ذخیره شد','ویرایش بازیکن');
-};
-ACT.aResetPlayer=function(){
-  modal({emoji:'⚠️',title:'پاک کردن پیشرفت بازیکن؟',
-    body:'<div class="dim">تنظیمات پنل دست‌نخورده می‌ماند.</div>',
-    buttons:[{t:'نه',cls:'g'},{t:'بله پاک کن',cls:'k',fn:function(){
-      var b=S.board, bd=S.boardDay;
-      S=freshState(); S.board=b; S.boardDay=bd;
-      aDone('پیشرفت پاک شد','پاک کردن پیشرفت');
-    }}]});
-};
-ACT.aStages=function(){
-  S.diffStage=clamp(gv('sd',S.diffStage)|0,1,CFG.TOTAL_STAGES);
-  S.guessStage=clamp(gv('sg',S.guessStage)|0,1,CFG.TOTAL_STAGES);
-  aDone('مراحل ذخیره شد','تغییر مرحله باز');
-};
-ACT.aUnlock=function(b){
-  if(b.getAttribute('data-v')==='all'){ S.diffStage=CFG.TOTAL_STAGES; S.guessStage=CFG.TOTAL_STAGES;
-    aDone('همه مراحل باز شد','باز کردن همه مراحل'); }
-  else { S.diffStage=1; S.guessStage=1; aDone('مراحل قفل شد','قفل کردن مراحل'); }
-};
-ACT.aClearStars=function(){ S.stars={}; S.done=0; aDone('ستاره‌ها پاک شد','پاک کردن ستاره‌ها'); };
-ACT.aTest=function(b){
-  var n=clamp(gv('tn',1)|0,1,CFG.TOTAL_STAGES);
-  SEC.log('تست مرحله',b.getAttribute('data-m')+' '+n);
-  if(b.getAttribute('data-m')==='diff') startDiff(n); else startGuess(n);
-};
-ACT.aEcon=function(){
-  TUNE.cfg.HINT_COST=Math.max(0,gv('ehint',CFG.HINT_COST)|0);
-  TUNE.cfg.FIFTY_COST=Math.max(0,gv('efifty',CFG.FIFTY_COST)|0);
-  TUNE.cfg.CLEAR_COST=Math.max(0,gv('eclear',CFG.CLEAR_COST)|0);
-  TUNE.cfg.REVIVE_COST=Math.max(0,gv('erev',CFG.REVIVE_COST)|0);
-  TUNE.cfg.REFILL_COST=Math.max(0,gv('eref',CFG.REFILL_COST)|0);
-  TUNE.cfg.MAX_LIVES=clamp(gv('emax',CFG.MAX_LIVES)|0,1,20);
-  TUNE.cfg.LIFE_MS=clamp(gv('elife',10)|0,1,600)*60000;
-  TUNE.cfg.TOTAL_STAGES=clamp(gv('etot',CFG.TOTAL_STAGES)|0,10,999);
-  TUNE.cfg.LEVEL_STEP=clamp(gv('elvl',CFG.LEVEL_STEP)|0,50,100000);
-  TUNE.mul.coin=clamp(gv('mcoin',1),0.1,20);
-  TUNE.mul.score=clamp(gv('mscore',1),0.1,20);
-  S.lives=Math.min(S.lives,TUNE.cfg.MAX_LIVES);
-  aDone('تنظیمات اقتصاد ذخیره شد','تغییر اقتصاد');
-};
-ACT.aDiff=function(){
-  var d=TUNE.d;
-  d.e=clamp(gv('de',d.e)|0,1,999);
-  d.m=clamp(gv('dm',d.m)|0,d.e,999);
-  d.h=clamp(gv('dh',d.h)|0,d.m,999);
-  d.baseTime=clamp(gv('dbt',d.baseTime)|0,10,600);
-  d.timeDrop=clamp(gv('dtd',d.timeDrop),0,10);
-  d.minTime=clamp(gv('dmt',d.minTime)|0,5,d.baseTime);
-  d.diffBase=clamp(gv('ddb',d.diffBase)|0,1,10);
-  d.diffStep=clamp(gv('dds',d.diffStep)|0,1,100);
-  d.maxDiff=clamp(gv('ddm',d.maxDiff)|0,3,10);
-  d.props=clamp(gv('dp',d.props)|0,6,16);
-  d.propStep=clamp(gv('dps',d.propStep)|0,1,100);
-  d.gTime=clamp(gv('dgt',d.gTime)|0,5,300);
-  d.gDrop=clamp(gv('dgd',d.gDrop),0,5);
-  d.gMin=clamp(gv('dgm',d.gMin)|0,3,d.gTime);
-  aDone('تنظیمات سختی ذخیره شد','تغییر سختی');
-};
-ACT.aFilter=function(){
-  itemFilter=($('#fSearch').value||'').trim();
-  itemCat=$('#fCat').value||'';
-  RENDER.admin();
-};
-ACT.aAddItem=function(){
-  var e=($('#niE').value||'').trim(), n=($('#niN').value||'').trim(), c=$('#niC').value;
-  if(!e||!n){ toast('ایموجی و نام را پر کن'); Sfx.wrong(); return; }
-  if(!CATS[c]) c='thing';
-  ITEMS.push([e,n.slice(0,24),c]);
-  TUNE.items=ITEMS; rebuildItems();
-  aDone('تصویر اضافه شد ✓','افزودن تصویر',n);
-};
-ACT.aEditItem=function(b){
-  var i=+b.getAttribute('data-i'), it=ITEMS[i];
-  if(!it) return;
-  var opts='',k;
-  for(k in CATS) opts+='<option value="'+k+'"'+(it[2]===k?' selected':'')+'>'+CATS[k]+'</option>';
-  var m=modal({emoji:it[0],title:'ویرایش تصویر',
-    body:'<div class="frow"><span>ایموجی</span><input class="inp" id="edE" maxlength="8" value="'+esc(it[0])+'"></div>'+
-      '<div class="frow"><span>نام</span><input class="inp wide" id="edN" maxlength="24" value="'+esc(it[1])+'"></div>'+
-      '<div class="frow"><span>دسته</span><select class="inp" id="edC">'+opts+'</select></div>',
-    buttons:[
-      {t:'ذخیره',cls:'g',fn:function(){
-        var e2=($('#edE',m).value||'').trim(), n2=($('#edN',m).value||'').trim();
-        if(!e2||!n2){ toast('پر کردن هر دو لازم است'); return; }
-        ITEMS[i]=[e2,n2.slice(0,24),$('#edC',m).value];
-        TUNE.items=ITEMS; rebuildItems();
-        aDone('ویرایش شد ✓','ویرایش تصویر',n2);
-      }},
-      {t:'انصراف',cls:'ghost'}
-    ]});
-};
-ACT.aDelItem=function(b){
-  var i=+b.getAttribute('data-i'), it=ITEMS[i];
-  if(!it) return;
-  if(ITEMS.length<=8){ toast('بانک نباید کمتر از ۸ تصویر داشته باشد'); return; }
-  modal({emoji:'🗑',title:'حذف «'+esc(it[1])+'»؟',
-    buttons:[{t:'نه',cls:'g'},{t:'حذف کن',cls:'k',fn:function(){
-      ITEMS.splice(i,1); TUNE.items=ITEMS; rebuildItems();
-      aDone('حذف شد','حذف تصویر',it[1]);
-    }}]});
-};
-ACT.aResetItems=function(){
-  modal({emoji:'⚠️',title:'برگرداندن بانک تصویرها؟',
-    buttons:[{t:'نه',cls:'g'},{t:'بله',cls:'k',fn:function(){
-      TUNE.items=null; tuneSave(); SEC.log('بازگردانی بانک تصویر');
-      noSave=true; toast('پس از بازشدن دوباره اعمال می‌شود'); location.reload();
-    }}]});
-};
-ACT.aMissions=function(){
-  var i,out=[];
-  for(i=0;i<MISSIONS.length;i++){
-    var m={},k;
-    for(k in MISSIONS[i]) m[k]=MISSIONS[i][k];
-    m.goal=clamp(gv('mg'+i,m.goal)|0,1,999);
-    m.coins=Math.max(0,gv('mc'+i,m.coins)|0);
-    m.score=Math.max(0,gv('ms'+i,m.score)|0);
-    out.push(m);
+/* بعد از هر بار رسم صفحه، اندازه‌اش بررسی شود */
+(function(){
+  var k;
+  for(k in RENDER){
+    (function(n,fn){ RENDER[n]=function(){ fn(); fitScreen(n); }; })(k,RENDER[k]);
   }
-  TUNE.missions=out; MISSIONS=out;
-  aDone('مأموریت‌ها ذخیره شد','تغییر مأموریت');
-};
-ACT.aDaily=function(){
-  var i,out=[];
-  for(i=0;i<7;i++) out.push({c:Math.max(0,gv('dr'+i,DAILY[i].c)|0),e:DAILY[i].e,special:!!DAILY[i].special});
-  TUNE.daily=out; DAILY=out;
-  aDone('پاداش‌ها ذخیره شد','تغییر پاداش روزانه');
-};
-ACT.aBackup=function(){
-  var payload={v:1,t:Date.now(),team:TEAM.name,state:S,tune:TUNE};
-  var body=JSON.stringify(payload);
-  var pack={sum:CRYPTO.sha256hex(body).slice(0,16),body:body};
-  $('#bkOut').value=JSON.stringify(pack);
-  SEC.log('ساخت پشتیبان');
-  toast('پشتیبان ساخته شد — کپی کن');
-};
-ACT.aRestore=function(){
-  var raw=($('#bkIn').value||'').trim();
-  if(!raw){ toast('متن پشتیبان خالی است'); return; }
-  var pack;
-  try{ pack=JSON.parse(raw); }catch(e){ toast('متن پشتیبان خراب است!'); Sfx.wrong(); return; }
-  if(!pack||!pack.body||!pack.sum){ toast('ساختار پشتیبان درست نیست!'); Sfx.wrong(); return; }
-  if(!CRYPTO.same(CRYPTO.sha256hex(pack.body).slice(0,16),String(pack.sum))){
-    Sfx.wrong();
-    modal({emoji:'⚠️',title:'کد کنترلی نمی‌خواند',
-      body:'<div class="warnBox">این فایل پشتیبان دست‌کاری شده یا ناقص است. '+
-        'بازگردانی می‌تواند بازی را خراب کند.</div>',
-      buttons:[{t:'بی‌خیال',cls:'g'},{t:'با این حال بازگردان',cls:'k',fn:function(){ doRestore(pack.body); }}]});
-    return;
-  }
-  doRestore(pack.body);
-};
-function doRestore(body){
-  var p;
-  try{ p=JSON.parse(body); }catch(e){ toast('پشتیبان خراب است'); return; }
-  noSave=true;
-  if(p.state){ try{ localStorage.setItem(KEY,JSON.stringify(p.state)); }catch(e){} }
-  if(p.tune){ try{ localStorage.setItem(TKEY,JSON.stringify(p.tune)); }catch(e){} }
-  SEC.log('بازگردانی پشتیبان');
-  toast('بازگردانی شد، بازی دوباره باز می‌شود…');
-  setTimeout(function(){ location.reload(); },700);
-}
-ACT.aPreview=function(){
-  var n=clamp(gv('pvn',12)|0,1,CFG.TOTAL_STAGES);
-  var cfg=diffCfg(n), sc=SC.build(cfg);
-  $('#pvBox').innerHTML=
-    '<div class="dim" style="font-size:12px;margin-bottom:6px">تم: '+sc.th.name+' · '+
-      fa(sc.diffs.length)+' تفاوت · '+DIFF_NAMES[cfg.d]+'</div>'+
-    '<div style="border-radius:12px;overflow:hidden;border:1px solid var(--line)">'+
-      '<svg viewBox="0 0 300 200" style="display:block;width:100%">'+SC.svgOf(sc,'a')+'</svg></div>'+
-    '<div style="height:6px"></div>'+
-    '<div style="border-radius:12px;overflow:hidden;border:1px solid var(--line)">'+
-      '<svg viewBox="0 0 300 200" style="display:block;width:100%">'+SC.svgOf(sc,'b')+'</svg></div>';
-  SEC.log('پیش‌نمایش صحنه','مرحله '+n);
-};
-ACT.aResetTune=function(){
-  modal({emoji:'⚠️',title:'بازگرداندن همه تنظیمات پنل؟',
-    body:'<div class="dim">پیشرفت بازیکن پاک نمی‌شود.</div>',
-    buttons:[{t:'نه',cls:'g'},{t:'بله',cls:'k',fn:function(){ SEC.log('بازگردانی تنظیمات'); tuneReset(); }}]});
-};
-ACT.aFactory=function(){
-  modal({emoji:'☢️',title:'پاک کردن کامل بازی؟',
-    body:'<div class="warnBox">همه چیز پاک می‌شود: پیشرفت، تنظیمات، رمز مدیر و گزارش‌ها. '+
-      'این کار برگشت‌پذیر نیست.</div>',
-    buttons:[{t:'نه، بی‌خیال',cls:'g'},{t:'بله، همه را پاک کن',cls:'k',fn:function(){
-      noSave=true;
-      try{ localStorage.removeItem(KEY); localStorage.removeItem(TKEY);
-        localStorage.removeItem('sultan_sec_v1'); }catch(e){}
-      location.reload();
-    }}]});
-};
-ACT.aWipe=function(){ SEC.setWipe(!SEC.data().wipe); RENDER.admin(); };
-ACT.aSecSave=function(){ SEC.setTimeout(gv('stmo',5)|0); toast('ذخیره شد ✓'); RENDER.admin(); };
-ACT.aClearLog=function(){ SEC.clearLog(); RENDER.admin(); };
-ACT.aChangePin=function(){
-  pinPrompt({title:'رمز فعلی',sub:'برای تغییر رمز، اول رمز فعلی را وارد کن.',
-    onSubmit:function(old){
-      closeModal();
-      if(SEC.check(old)!=='ok'){ Sfx.wrong(); toast('رمز فعلی درست نیست!'); return; }
-      pinPrompt({title:'رمز تازه',sub:'رمز تازه را وارد کن (۴ تا ۸ رقم).',
-        onSubmit:function(p1){
-          closeModal();
-          pinPrompt({title:'تکرار رمز تازه',sub:'یک بار دیگر همان رمز.',
-            onSubmit:function(p2){
-              closeModal();
-              if(p1!==p2){ Sfx.wrong(); toast('دو رمز یکی نیستند!'); return; }
-              var rec=SEC.setPin(p1);
-              Sfx.win();
-              modal({emoji:'🗝️',title:'کد بازیابی تازه',dismiss:false,
-                body:'<div class="warnBox">کد بازیابی هم عوض شد. این را یادداشت کن:</div>'+
-                  '<div class="sec mono" style="margin-top:9px;font-size:17px;text-align:center">'+rec+'</div>',
-                buttons:[{t:'یادداشت کردم',cls:'p',fn:function(){ RENDER.admin(); }}]});
-            }});
-        }});
-    }});
-};
+})();
 
 /* ============================================================
    ۱۵) راه‌اندازی
@@ -2963,7 +2145,8 @@ function onResize(){
   resizeRaf=requestAnimationFrame(function(){
     resizeRaf=0;
     if(curScreen==='diff') fitScenes();
-    if(curScreen==='guess'){ fitPic(); if(GG.tiles.length) paintPic(); }
+    else if(curScreen==='guess'){ fitPic(); if(GG.tiles.length) paintPic(); }
+    else fitScreen(curScreen);
   });
 }
 function ticker(){
@@ -2971,11 +2154,6 @@ function ticker(){
   regenLives();
   var ct=$('#lifeCt');
   if(ct) ct.textContent=mmss(lifeLeftMs()/1000);
-  var lc=$('#lockCt');
-  if(lc) lc.textContent=mmss(SEC.lockedFor()/1000);
-  if(curScreen==='admin' && !SEC.open()){
-    toast('نشست مدیریت بسته شد 🔒'); go('about',false);
-  }
   if(curScreen==='home'){
     var e=$('#homeLife');
     if(e) e.textContent=lifeText();
@@ -2998,9 +2176,8 @@ function welcome(){
 function boot(){
   var firstRun=false;
   try{ firstRun=!localStorage.getItem(KEY); }catch(e){ firstRun=true; }
-  SEC.init();
-  tuneLoad();
-  tuneApply();
+  confLoad();
+  confApply();
   load();
   ensureBoard();
 
@@ -3017,7 +2194,7 @@ function boot(){
   window.addEventListener('orientationchange',function(){ setTimeout(onResize,260); });
   document.addEventListener('contextmenu',function(e){ e.preventDefault(); });
   document.addEventListener('visibilitychange',function(){
-    if(document.hidden){ DG.last=0; GG.last=0; saveNow(); SEC.lockNow(); }
+    if(document.hidden){ DG.last=0; GG.last=0; saveNow(); }
   });
   window.addEventListener('pagehide',saveNow);
 
@@ -3039,8 +2216,7 @@ window.SM={
   go:go, diff:startDiff, guess:startGuess, scene:SC,
   dg:function(){return DG;}, gg:function(){return GG;},
   save:saveNow, items:function(){return ITEMS;}, cfg:function(){return CFG;},
-  sec:SEC, crypto:CRYPTO, tune:function(){return TUNE;},
-  admin:function(){ adminGate(); }, features:FEATURES, team:TEAM
+  conf:function(){return CONF;}, features:FEATURES, team:TEAM
 };
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot);
 else boot();

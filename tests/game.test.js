@@ -184,10 +184,12 @@ const errs = [];
     const btns = await page.$$('#modalRoot .btn');
     await btns[1].click(); // لیست مراحل
     await page.waitForTimeout(500);
-    const cells = await page.$$eval('.cell', e => e.length);
-    if (cells !== 100) throw new Error('cells=' + cells);
-    const locked = await page.$$eval('.cell.lock', e => e.length);
-    if (locked !== 98) throw new Error('locked=' + locked);
+    const cells = await page.$$eval('.screen.on .cell', e => e.length);
+    if (cells !== 20) throw new Error('cells per page=' + cells);
+    const locked = await page.$$eval('.screen.on .cell.lock', e => e.length);
+    if (locked !== 18) throw new Error('locked on page 1=' + locked);
+    const pages = await page.$$eval('.pgDots i', e => e.length);
+    if (pages !== 5) throw new Error('pages=' + pages);
   });
 
   await step('switch stage tab', async () => {
@@ -198,9 +200,10 @@ const errs = [];
   });
 
   await step('locked stage blocked', async () => {
-    const cells = await page.$$('.screen.on .cell');
-    await cells[60].click();
-    await page.waitForTimeout(300);
+    const cells = await page.$$('.screen.on .cell.lock');
+    if (!cells.length) throw new Error('no locked cells');
+    await cells[0].click();
+    await page.waitForTimeout(400);
     if (await page.isVisible('#s-diff')) throw new Error('locked stage opened');
   });
 
@@ -344,7 +347,7 @@ const errs = [];
   await step('play stages 1..100 of guess mode', async () => {
     // drive the real UI quickly through many stages via the exposed API
     for (const n of [1, 10, 33, 50, 77, 99, 100]) {
-      await page.evaluate(n => { const s = window.SM.state(); s.lives = 5; s.guessStage = n; window.SM.guess(n); }, n);
+      await page.evaluate(n => { const s = window.SM.state(); s.lives = 5; s.guessStage = n; window.SM.save(); window.SM.guess(n); }, n);
       await page.waitForTimeout(160);
       const info = await page.evaluate(() => {
         const g = window.SM.gg();
@@ -364,6 +367,8 @@ const errs = [];
 
   await step('play several diff stages end to end', async () => {
     for (const n of [10, 40, 70, 100]) {
+      // بازیکنی که تا این مرحله پیش رفته است
+      await page.evaluate(n => { window.SM.state().diffStage = n; window.SM.save(); }, n);
       await page.evaluate(n => window.SM.diff(n), n);
       await page.waitForTimeout(400);
       const diffs = await page.evaluate(() => window.SM.dg().scene.diffs);
@@ -381,7 +386,7 @@ const errs = [];
   });
 
   await step('time-up flow', async () => {
-    await page.evaluate(() => { window.SM.diff(5); });
+    await page.evaluate(() => { window.SM.state().diffStage = 5; window.SM.save(); window.SM.diff(5); });
     await page.waitForTimeout(400);
     await page.evaluate(() => { window.SM.dg().left = 300; });
     await page.waitForTimeout(900);
@@ -397,7 +402,7 @@ const errs = [];
   });
 
   await step('no lives flow', async () => {
-    await page.evaluate(() => { const s = window.SM.state(); s.lives = 0; s.lifeTs = Date.now(); s.coins = 500; window.SM.save(); window.SM.guess(3); });
+    await page.evaluate(() => { const s = window.SM.state(); s.lives = 0; s.lifeTs = Date.now(); s.coins = 500; s.guessStage = 3; window.SM.save(); window.SM.guess(3); });
     await page.waitForTimeout(500);
     const txt = await page.textContent('#modalRoot .modal');
     if (!txt.includes('جان')) throw new Error('modal: ' + txt.slice(0, 40));
@@ -408,8 +413,8 @@ const errs = [];
   });
 
   await step('landscape layout', async () => {
-    await page.evaluate(() => window.SM.diff(3));
-    await page.waitForTimeout(400);
+    await page.evaluate(() => { window.SM.state().diffStage = 3; window.SM.save(); window.SM.diff(3); });
+    await page.waitForTimeout(500);
     await page.setViewportSize({ width: 760, height: 393 });
     await page.waitForTimeout(500);
     const cls = await page.getAttribute('#dScenes', 'class');
@@ -428,7 +433,7 @@ const errs = [];
     await page.waitForTimeout(500);
     const overflow = await page.evaluate(() => document.body.scrollWidth > window.innerWidth + 1);
     if (overflow) throw new Error('home overflows horizontally');
-    await page.evaluate(() => window.SM.diff(2));
+    await page.evaluate(() => { window.SM.state().diffStage = 2; window.SM.save(); window.SM.diff(2); });
     await page.waitForTimeout(500);
     const h = await page.$eval('#wrapB', e => e.getBoundingClientRect().bottom);
     if (h > 480) throw new Error('scene B below fold: ' + h);

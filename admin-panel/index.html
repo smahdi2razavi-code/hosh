@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>پنل مدیریت — سلطان معما</title>
+<style>
+/* ==================================================================
+   پنل مدیریت بازی «سلطان معما» — تیم SMRx
+   این یک سایت مستقل است که روی لپ‌تاپ اجرا می‌شود و فایل تنظیمات
+   بازی (config.js) را می‌سازد. هیچ ارتباطی با اینترنت ندارد.
+   ================================================================== */
+@font-face{font-family:'Vazir';src:url('vazir.ttf') format('truetype');font-weight:400;font-display:swap}
+@font-face{font-family:'Vazir';src:url('vazir-bold.ttf') format('truetype');font-weight:700;font-display:swap}
+:root{
+  --bg:#12102b; --bg2:#1a1740; --panel:#1e1b45; --panel2:#252152;
+  --line:rgba(255,255,255,.11); --txt:#f2f0ff; --dim:rgba(242,240,255,.58);
+  --gold:#FFC94A; --pink:#FF5D8F; --cyan:#2FD8D0; --green:#43D97B;
+  --red:#FF6060; --violet:#9B6BFF; --blue:#4C9BFF;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{font-family:'Vazir',Tahoma,'Segoe UI',Roboto,sans-serif;background:var(--bg);
+  color:var(--txt);font-size:14px;line-height:1.8;
+  background-image:radial-gradient(90% 60% at 90% 0%,#2b1f66 0%,rgba(0,0,0,0) 60%),
+                   radial-gradient(70% 50% at 0% 100%,#16305e 0%,rgba(0,0,0,0) 55%)}
+b{font-weight:700}
+input,select,textarea,button{font-family:inherit}
+a{color:var(--cyan)}
+
+/* ---------- ورود ---------- */
+#gate{position:fixed;top:0;right:0;bottom:0;left:0;display:flex;align-items:center;
+  justify-content:center;background:rgba(10,8,28,.92);z-index:50;padding:20px}
+#gate.off{display:none}
+.gateBox{width:100%;max-width:380px;background:linear-gradient(170deg,#2c2467,#191545);
+  border:1px solid var(--line);border-radius:24px;padding:26px;text-align:center;
+  box-shadow:0 24px 60px rgba(0,0,0,.55)}
+.gateBox h1{font-size:22px;margin:6px 0 4px}
+.gateBox p{color:var(--dim);font-size:13px;margin:0 0 16px}
+.pinIn{width:100%;text-align:center;font-size:26px;letter-spacing:10px;padding:12px;
+  border-radius:14px;border:1px solid var(--line);background:rgba(0,0,0,.3);color:#fff}
+.pinIn:focus{outline:none;border-color:var(--violet)}
+.gateMsg{min-height:22px;font-size:13px;margin-top:10px}
+.gateMsg.bad{color:#ff9b9b}
+.gateMsg.ok{color:#8ef0b4}
+
+/* ---------- چیدمان ---------- */
+#app{display:none;height:100%;grid-template-columns:236px 1fr;grid-template-rows:auto 1fr}
+#app.on{display:grid}
+header{grid-column:1/-1;display:flex;align-items:center;gap:14px;padding:12px 20px;
+  border-bottom:1px solid var(--line);background:rgba(0,0,0,.22)}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px}
+.logo .mk{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;
+  justify-content:center;font-size:15px;font-weight:700;color:#241a00;
+  background:linear-gradient(160deg,#FFE9A8,#FFB627)}
+.grow{flex:1}
+.hbtn{border:1px solid var(--line);background:var(--panel2);color:#fff;border-radius:12px;
+  padding:9px 15px;font-size:13.5px;font-weight:700;cursor:pointer}
+.hbtn:hover{background:#302a63}
+.hbtn.p{background:linear-gradient(180deg,#FFD86B,#F5A623);color:#432700;border-color:transparent}
+.hbtn.g{background:linear-gradient(180deg,#6BE79A,#25B45E);color:#04331a;border-color:transparent}
+nav{border-left:1px solid var(--line);padding:14px 10px;overflow-y:auto;background:rgba(0,0,0,.16)}
+nav button{display:flex;align-items:center;gap:9px;width:100%;text-align:right;border:none;
+  background:transparent;color:var(--dim);font-size:14px;font-weight:700;padding:11px 13px;
+  border-radius:12px;cursor:pointer;margin-bottom:3px}
+nav button:hover{background:rgba(255,255,255,.06);color:#fff}
+nav button.on{background:linear-gradient(180deg,#A98BFF,#7A4BF0);color:#fff}
+main{overflow-y:auto;padding:20px 24px 40px}
+.wrap{max-width:940px;margin:0 auto}
+h2{font-size:20px;margin:0 0 4px}
+.sub{color:var(--dim);font-size:13px;margin-bottom:16px}
+
+/* ---------- کارت و فرم ---------- */
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px 18px;
+  margin-bottom:14px}
+.card h3{margin:0 0 12px;font-size:15.5px;display:flex;align-items:center;gap:7px}
+.card h3 span{font-size:11.5px;color:var(--dim);font-weight:400}
+.rows{display:grid;gap:2px}
+.row{display:flex;align-items:center;gap:12px;padding:8px 0}
+.row+.row{border-top:1px dashed rgba(255,255,255,.08)}
+.row label{flex:1;color:var(--dim);font-size:13.5px}
+.row .hint{display:block;font-size:11px;color:rgba(255,255,255,.34)}
+input[type=number],input[type=text],select,textarea{
+  border:1px solid var(--line);background:rgba(0,0,0,.28);color:#fff;border-radius:11px;
+  padding:9px 12px;font-size:14px}
+input[type=number]{width:120px;text-align:center}
+input[type=text]{width:230px;text-align:right}
+select{width:170px}
+textarea{width:100%;direction:ltr;text-align:left;font-family:ui-monospace,Menlo,Consolas,monospace;
+  font-size:12px;line-height:1.6;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--violet)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.kpi{background:rgba(0,0,0,.24);border:1px solid var(--line);border-radius:14px;padding:12px;
+  text-align:center}
+.kpi b{display:block;font-size:22px;line-height:1.4}
+.kpi span{font-size:12px;color:var(--dim)}
+.sw{position:relative;width:52px;height:29px;flex:0 0 52px;border-radius:15px;
+  background:rgba(255,255,255,.15);border:1px solid var(--line);cursor:pointer}
+.sw i{position:absolute;top:3px;right:3px;width:21px;height:21px;border-radius:50%;
+  background:#cfcbe8;transition:all .16s ease}
+.sw.on{background:linear-gradient(180deg,#6BE79A,#25B45E);border-color:transparent}
+.sw.on i{right:27px;background:#fff}
+.pill{display:inline-block;background:rgba(255,255,255,.09);border:1px solid var(--line);
+  border-radius:10px;padding:2px 9px;font-size:11.5px;color:var(--dim)}
+.warn{background:rgba(255,201,74,.11);border:1px solid rgba(255,201,74,.35);border-radius:14px;
+  padding:11px 14px;font-size:12.5px;line-height:1.9}
+.okBox{background:rgba(67,217,123,.11);border:1px solid rgba(67,217,123,.35);border-radius:14px;
+  padding:11px 14px;font-size:12.5px;line-height:1.9}
+.danger{border-color:rgba(255,96,96,.4)}
+.btn{border:none;border-radius:13px;padding:11px 18px;font-size:14px;font-weight:700;
+  cursor:pointer;color:#241a00;background:linear-gradient(180deg,#FFD86B,#F5A623)}
+.btn.v{background:linear-gradient(180deg,#A98BFF,#7A4BF0);color:#fff}
+.btn.g{background:linear-gradient(180deg,#6BE79A,#25B45E);color:#04331a}
+.btn.r{background:linear-gradient(180deg,#FF8B8B,#E23A3A);color:#fff}
+.btn.ghost{background:var(--panel2);color:#fff;border:1px solid var(--line)}
+.btn.sm{padding:8px 13px;font-size:13px;border-radius:11px}
+.btn:active{transform:translateY(1px)}
+.btnRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+
+/* ---------- جدول محتوا ---------- */
+.tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{text-align:right;color:var(--dim);font-weight:700;font-size:12px;padding:8px 10px;
+  border-bottom:1px solid var(--line)}
+td{padding:7px 10px;border-bottom:1px solid rgba(255,255,255,.05)}
+tr:hover td{background:rgba(255,255,255,.03)}
+td.e{font-size:20px;width:44px}
+td.a{width:96px;text-align:left}
+.ib{border:1px solid var(--line);background:var(--panel2);color:#fff;border-radius:9px;
+  width:30px;height:30px;cursor:pointer;font-size:13px}
+.ib:hover{background:#332c6b}
+.ib.del:hover{background:#7a2020;border-color:#a33}
+.tblWrap{max-height:430px;overflow-y:auto;border:1px solid var(--line);border-radius:14px}
+.count{font-size:12px;color:var(--dim)}
+
+/* ---------- پیش‌نمایش مرحله ---------- */
+.pv{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.pvc{background:rgba(0,0,0,.24);border:1px solid var(--line);border-radius:13px;padding:10px;
+  text-align:center;font-size:12px}
+.pvc b{display:block;font-size:15px;margin-bottom:2px}
+.pvc .d0{color:var(--green)} .pvc .d1{color:var(--gold)}
+.pvc .d2{color:#FFA05A} .pvc .d3{color:var(--red)}
+
+/* ---------- توست ---------- */
+#toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);z-index:60;
+  display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none}
+#toast div{background:rgba(12,9,34,.96);border:1px solid var(--line);border-radius:13px;
+  padding:10px 18px;font-size:13.5px;font-weight:700;box-shadow:0 10px 26px rgba(0,0,0,.5);
+  animation:tin .25s}
+@keyframes tin{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+/* ---------- پنجره ---------- */
+#modal{position:fixed;top:0;right:0;bottom:0;left:0;background:rgba(8,6,24,.75);z-index:55;
+  display:none;align-items:center;justify-content:center;padding:20px}
+#modal.on{display:flex}
+.mBox{width:100%;max-width:430px;background:linear-gradient(170deg,#2c2467,#191545);
+  border:1px solid var(--line);border-radius:20px;padding:20px;
+  box-shadow:0 22px 55px rgba(0,0,0,.55)}
+.mBox h3{margin:0 0 12px;font-size:17px}
+
+@media (max-width:820px){
+  #app.on{grid-template-columns:1fr}
+  nav{display:flex;overflow-x:auto;border-left:none;border-bottom:1px solid var(--line);padding:8px}
+  nav button{width:auto;white-space:nowrap;margin:0 3px 0 0}
+  .grid2,.grid3{grid-template-columns:1fr}
+  .pv{grid-template-columns:repeat(2,1fr)}
+  input[type=text]{width:100%}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= ورود ================= -->
+<div id="gate">
+  <div class="gateBox">
+    <div style="font-size:44px;line-height:1">🛠</div>
+    <h1>پنل مدیریت سلطان معما</h1>
+    <p id="gateSub">رمز پنل را وارد کن</p>
+    <input class="pinIn" id="pin" type="password" inputmode="numeric" maxlength="12" placeholder="••••">
+    <div class="gateMsg" id="gateMsg"></div>
+    <div class="btnRow" style="justify-content:center">
+      <button class="btn" id="gateGo">ورود</button>
+      <button class="btn ghost sm" id="gateForgot">رمز را فراموش کردم</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= پنل ================= -->
+<div id="app">
+  <header>
+    <div class="logo"><span class="mk">SMRx</span><span>پنل مدیریت سلطان معما</span></div>
+    <span class="pill" id="dirty">ذخیره‌شده</span>
+    <div class="grow"></div>
+    <button class="hbtn g" id="btnExport">📤 ساخت config.js</button>
+    <button class="hbtn" id="btnLock">🔒 قفل</button>
+  </header>
+
+  <nav id="nav"></nav>
+  <main><div class="wrap" id="view"></div></main>
+</div>
+
+<div id="toast"></div>
+<div id="modal"><div class="mBox" id="mBox"></div></div>
+
+<script>
+/* eslint-disable */
+(function(){
+'use strict';
+
+/* ============================================================
+   ۱) ابزارها
+   ============================================================ */
+var $=function(s,r){return (r||document).querySelector(s);};
+var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));};
+var FAD=['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+function fa(n){return String(n).replace(/[0-9]/g,function(d){return FAD[+d];});}
+function clamp(v,a,b){return v<a?a:(v>b?b:v);}
+function el(t,c,h){var e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e;}
+function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;')
+  .replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function toast(m,ms){
+  var b=$('#toast'), d=el('div',null,m);
+  b.appendChild(d);
+  setTimeout(function(){ if(d.parentNode) d.parentNode.removeChild(d); },ms||2000);
+}
+function modal(title,body,buttons){
+  var m=$('#modal'), b=$('#mBox');
+  b.innerHTML='<h3>'+title+'</h3>'+body;
+  var row=el('div','btnRow');
+  (buttons||[{t:'بستن',c:'ghost'}]).forEach(function(o){
+    var x=el('button','btn '+(o.c||'ghost'),o.t);
+    x.onclick=function(){ if(!o.keep) m.className=''; if(o.fn) o.fn(); };
+    row.appendChild(x);
+  });
+  b.appendChild(row);
+  m.className='on';
+  return b;
+}
+function closeModal(){ $('#modal').className=''; }
+
+/* ============================================================
+   ۲) رمزنگاری (SHA-256 + PBKDF2 — بدون کتابخانه بیرونی)
+   ============================================================ */
+var CRYPTO=(function(){
+  var K=[0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
+         0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,
+         0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,
+         0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,
+         0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,
+         0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,
+         0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,
+         0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+  function rotr(x,n){ return (x>>>n)|(x<<(32-n)); }
+  function sha256(msg){
+    var H=[0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
+    var l=msg.length, blocks=Math.ceil((l+9)/64), total=blocks*64;
+    var p=new Uint8Array(total), i, j;
+    p.set(msg); p[l]=0x80;
+    var bits=l*8, hi=Math.floor(bits/4294967296), lo=bits>>>0;
+    p[total-8]=(hi>>>24)&255; p[total-7]=(hi>>>16)&255; p[total-6]=(hi>>>8)&255; p[total-5]=hi&255;
+    p[total-4]=(lo>>>24)&255; p[total-3]=(lo>>>16)&255; p[total-2]=(lo>>>8)&255; p[total-1]=lo&255;
+    var w=new Int32Array(64), a,b,c,d,e,f,g,h,t1,t2,s0,s1,ch,mj,o;
+    for(i=0;i<blocks;i++){
+      o=i*64;
+      for(j=0;j<16;j++) w[j]=(p[o+j*4]<<24)|(p[o+j*4+1]<<16)|(p[o+j*4+2]<<8)|p[o+j*4+3];
+      for(j=16;j<64;j++){
+        s0=rotr(w[j-15],7)^rotr(w[j-15],18)^(w[j-15]>>>3);
+        s1=rotr(w[j-2],17)^rotr(w[j-2],19)^(w[j-2]>>>10);
+        w[j]=(w[j-16]+s0+w[j-7]+s1)|0;
+      }
+      a=H[0];b=H[1];c=H[2];d=H[3];e=H[4];f=H[5];g=H[6];h=H[7];
+      for(j=0;j<64;j++){
+        s1=rotr(e,6)^rotr(e,11)^rotr(e,25);
+        ch=(e&f)^(~e&g);
+        t1=(h+s1+ch+K[j]+w[j])|0;
+        s0=rotr(a,2)^rotr(a,13)^rotr(a,22);
+        mj=(a&b)^(a&c)^(b&c);
+        t2=(s0+mj)|0;
+        h=g;g=f;f=e;e=(d+t1)|0;d=c;c=b;b=a;a=(t1+t2)|0;
+      }
+      H[0]=(H[0]+a)|0;H[1]=(H[1]+b)|0;H[2]=(H[2]+c)|0;H[3]=(H[3]+d)|0;
+      H[4]=(H[4]+e)|0;H[5]=(H[5]+f)|0;H[6]=(H[6]+g)|0;H[7]=(H[7]+h)|0;
+    }
+    var out=new Uint8Array(32);
+    for(i=0;i<8;i++){ out[i*4]=(H[i]>>>24)&255; out[i*4+1]=(H[i]>>>16)&255;
+      out[i*4+2]=(H[i]>>>8)&255; out[i*4+3]=H[i]&255; }
+    return out;
+  }
+  function hmac(key,msg){
+    var i,k=key;
+    if(k.length>64) k=sha256(k);
+    var pad=new Uint8Array(64); pad.set(k);
+    var ip=new Uint8Array(64+msg.length), op=new Uint8Array(96);
+    for(i=0;i<64;i++){ ip[i]=pad[i]^0x36; op[i]=pad[i]^0x5c; }
+    ip.set(msg,64);
+    op.set(sha256(ip),64);
+    return sha256(op);
+  }
+  function pbkdf2(pw,salt,iter){
+    var s1=new Uint8Array(salt.length+4), i, j;
+    s1.set(salt);
+    s1[salt.length+3]=1;
+    var u=hmac(pw,s1), t=new Uint8Array(u);
+    for(i=1;i<iter;i++){ u=hmac(pw,u); for(j=0;j<32;j++) t[j]^=u[j]; }
+    return t;
+  }
+  function str2b(s){
+    var out=[],i,c;
+    for(i=0;i<s.length;i++){
+      c=s.charCodeAt(i);
+      if(c<128) out.push(c);
+      else if(c<2048) out.push(192|(c>>6),128|(c&63));
+      else out.push(224|(c>>12),128|((c>>6)&63),128|(c&63));
+    }
+    return new Uint8Array(out);
+  }
+  function hex(b){ var s='',i; for(i=0;i<b.length;i++) s+=(b[i]<16?'0':'')+b[i].toString(16); return s; }
+  function rnd(n){
+    var a=new Uint8Array(n),i;
+    try{ if(window.crypto&&window.crypto.getRandomValues){ window.crypto.getRandomValues(a); return a; } }catch(e){}
+    for(i=0;i<n;i++) a[i]=Math.floor(Math.random()*256);
+    return a;
+  }
+  function same(a,b){
+    if(typeof a!=='string'||typeof b!=='string'||a.length!==b.length) return false;
+    var r=0,i;
+    for(i=0;i<a.length;i++) r|=a.charCodeAt(i)^b.charCodeAt(i);
+    return r===0;
+  }
+  return {
+    sha256hex:function(s){ return hex(sha256(str2b(s))); },
+    derive:function(pw,saltHex,iter){
+      var salt=new Uint8Array(saltHex.length/2),i;
+      for(i=0;i<salt.length;i++) salt[i]=parseInt(saltHex.substr(i*2,2),16);
+      return hex(pbkdf2(str2b(pw),salt,iter));
+    },
+    randHex:function(n){ return hex(rnd(n)); },
+    same:same
+  };
+})();
+
+/* ============================================================
+   ۳) امنیت پنل
+   ============================================================ */
+var SEC=(function(){
+  var KEY='smrx_admin_sec_v1', ITER=15000;
+  var D={salt:'',hash:'',rsalt:'',rhash:'',fails:0,lock:0,enabled:true,timeout:20,log:[]};
+  var session=0;
+  function load(){
+    try{ var r=localStorage.getItem(KEY);
+      if(r){ var o=JSON.parse(r),k; for(k in D) if(o[k]!==undefined) D[k]=o[k]; } }catch(e){}
+    if(!D.log) D.log=[];
+  }
+  function save(){ try{ localStorage.setItem(KEY,JSON.stringify(D)); }catch(e){} }
+  function log(a,d){
+    D.log.push({t:Date.now(),a:a,d:d||''});
+    if(D.log.length>150) D.log=D.log.slice(-150);
+    save();
+  }
+  function lockMs(f){ return f<3?0:(f<5?30e3:(f<7?3e5:(f<10?18e5:36e5))); }
+  return {
+    init:load, data:function(){return D;},
+    isSet:function(){ return !!D.hash; },
+    enabled:function(){ return D.enabled!==false; },
+    lockedFor:function(){ return Math.max(0,D.lock-Date.now()); },
+    setPin:function(pin){
+      D.salt=CRYPTO.randHex(16);
+      D.hash=CRYPTO.derive(pin,D.salt,ITER);
+      var rec=CRYPTO.randHex(5).toUpperCase();
+      D.rsalt=CRYPTO.randHex(16);
+      D.rhash=CRYPTO.derive(rec,D.rsalt,ITER);
+      D.fails=0; D.lock=0; save(); log('تعیین رمز');
+      return rec;
+    },
+    check:function(pin){
+      if(this.lockedFor()>0) return 'lock';
+      if(CRYPTO.same(CRYPTO.derive(pin,D.salt,ITER),D.hash)){
+        D.fails=0; D.lock=0; session=Date.now(); save(); log('ورود موفق');
+        return 'ok';
+      }
+      D.fails++; D.lock=Date.now()+lockMs(D.fails);
+      save(); log('ورود ناموفق','تلاش '+D.fails);
+      return 'bad';
+    },
+    recover:function(code){
+      if(!D.rhash) return false;
+      if(CRYPTO.same(CRYPTO.derive(String(code).toUpperCase().trim(),D.rsalt,ITER),D.rhash)){
+        D.hash=''; D.salt=''; D.fails=0; D.lock=0; save(); log('بازیابی رمز');
+        return true;
+      }
+      log('بازیابی ناموفق'); return false;
+    },
+    open:function(){ return !D.enabled || (session>0 && (Date.now()-session)<D.timeout*60000); },
+    touch:function(){ if(session) session=Date.now(); },
+    lockNow:function(){ session=0; log('قفل کردن پنل'); },
+    setEnabled:function(v){ D.enabled=!!v; save(); log('قفل پنل',v?'روشن':'خاموش'); },
+    setTimeout:function(m){ D.timeout=clamp(m|0,1,240); save(); },
+    clearLog:function(){ D.log=[]; save(); log('پاک کردن گزارش'); },
+    log:log
+  };
+})();
+
+/* ============================================================
+   ۴) مقدارهای پیش‌فرض بازی
+   ============================================================ */
+var CATS={animal:'حیوانات',food:'غذاها',place:'مکان‌های معروف',thing:'وسایل',
+  fantasy:'شخصیت‌های خیالی',sport:'ورزش',nature:'طبیعت',car:'خودرو',fruit:'میوه‌ها',job:'شغل‌ها'};
+
+var DEF_ITEMS=[
+['🐱','گربه','animal'],['🐶','سگ','animal'],['🐰','خرگوش','animal'],['🦁','شیر','animal'],
+['🐘','فیل','animal'],['🐍','مار','animal'],['🐢','لاک‌پشت','animal'],['🐝','زنبور','animal'],
+['🦋','پروانه','animal'],['🐬','دلفین','animal'],['🐧','پنگوئن','animal'],['🐴','اسب','animal'],
+['🐮','گاو','animal'],['🐔','مرغ','animal'],['🦊','روباه','animal'],['🐻','خرس','animal'],
+['🐼','پاندا','animal'],['🐒','میمون','animal'],['🦒','زرافه','animal'],['🐳','نهنگ','animal'],
+['🦅','عقاب','animal'],['🐑','گوسفند','animal'],['🐪','شتر','animal'],['🦌','گوزن','animal'],
+['🍕','پیتزا','food'],['🍔','همبرگر','food'],['🍜','نودل','food'],['🍚','برنج','food'],
+['🥗','سالاد','food'],['🥪','ساندویچ','food'],['🍟','سیب‌زمینی سرخ‌کرده','food'],['🌭','هات‌داگ','food'],
+['🍳','تخم‌مرغ','food'],['🍞','نان','food'],['🧀','پنیر','food'],['🍦','بستنی','food'],
+['🍫','شکلات','food'],['🎂','کیک','food'],['🍩','دونات','food'],['🥤','نوشیدنی','food'],
+['☕','قهوه','food'],['🍯','عسل','food'],
+['🗼','برج ایفل','place'],['🕌','مسجد','place'],['🏰','قلعه','place'],['🗽','مجسمه آزادی','place'],
+['🕋','کعبه','place'],['🏛️','معبد باستانی','place'],['🌉','پل بزرگ','place'],['🏟️','ورزشگاه','place'],
+['🏯','قصر ژاپنی','place'],['⛩️','دروازه ژاپنی','place'],['🗿','مجسمه سنگی','place'],['🎡','شهربازی','place'],
+['🏝️','جزیره','place'],['⛲','فواره','place'],
+['📱','موبایل','thing'],['💻','لپ‌تاپ','thing'],['🪑','صندلی','thing'],['🛏️','تخت‌خواب','thing'],
+['🚪','در','thing'],['🔑','کلید','thing'],['⌚','ساعت مچی','thing'],['📷','دوربین','thing'],
+['🔦','چراغ‌قوه','thing'],['✂️','قیچی','thing'],['📚','کتاب','thing'],['☂️','چتر','thing'],
+['🧹','جارو','thing'],['🪥','مسواک','thing'],['🔨','چکش','thing'],['🧵','نخ و سوزن','thing'],
+['🎈','بادکنک','thing'],['🕯️','شمع','thing'],
+['🧙','جادوگر','fantasy'],['🧚','پری','fantasy'],['🐉','اژدها','fantasy'],['👻','روح','fantasy'],
+['🤖','ربات','fantasy'],['👽','موجود فضایی','fantasy'],['🧜','پری دریایی','fantasy'],['🦸','ابرقهرمان','fantasy'],
+['🧛','خون‌آشام','fantasy'],['🎅','بابانوئل','fantasy'],['🧞','غول چراغ','fantasy'],['🧟','زامبی','fantasy'],
+['🦄','اسب شاخ‌دار','fantasy'],['👹','دیو','fantasy'],
+['⚽','فوتبال','sport'],['🏀','بسکتبال','sport'],['🏐','والیبال','sport'],['🎾','تنیس','sport'],
+['🏓','پینگ‌پنگ','sport'],['🥊','بوکس','sport'],['🏊','شنا','sport'],['🚴','دوچرخه‌سواری','sport'],
+['🏋️','وزنه‌برداری','sport'],['⛷️','اسکی','sport'],['🤼','کشتی','sport'],['🏸','بدمینتون','sport'],
+['🥋','کاراته','sport'],['🏹','تیراندازی','sport'],['⛳','گلف','sport'],['🛹','اسکیت','sport'],
+['🌲','درخت','nature'],['🌊','دریا','nature'],['🏔️','کوه','nature'],['🌵','کاکتوس','nature'],
+['🌈','رنگین‌کمان','nature'],['❄️','برف','nature'],['🔥','آتش','nature'],['🌻','آفتابگردان','nature'],
+['🌙','ماه','nature'],['⭐','ستاره','nature'],['🌋','آتشفشان','nature'],['🍂','برگ پاییزی','nature'],
+['☁️','ابر','nature'],['⚡','رعد و برق','nature'],['🌷','گل لاله','nature'],['🌴','نخل','nature'],
+['🚗','ماشین','car'],['🚌','اتوبوس','car'],['🚕','تاکسی','car'],['🚑','آمبولانس','car'],
+['🚒','ماشین آتش‌نشانی','car'],['🚓','ماشین پلیس','car'],['🏍️','موتورسیکلت','car'],['🚲','دوچرخه','car'],
+['✈️','هواپیما','car'],['🚁','هلیکوپتر','car'],['🚢','کشتی','car'],['🚂','قطار','car'],
+['🚜','تراکتور','car'],['🛴','اسکوتر','car'],['🚀','موشک','car'],['🛺','سه‌چرخه','car'],
+['🍎','سیب','fruit'],['🍌','موز','fruit'],['🍇','انگور','fruit'],['🍉','هندوانه','fruit'],
+['🍓','توت‌فرنگی','fruit'],['🍒','گیلاس','fruit'],['🍑','هلو','fruit'],['🍍','آناناس','fruit'],
+['🥝','کیوی','fruit'],['🍋','لیمو','fruit'],['🍊','پرتقال','fruit'],['🥭','انبه','fruit'],
+['🥥','نارگیل','fruit'],['🍐','گلابی','fruit'],['🫐','بلوبری','fruit'],['🍈','خربزه','fruit'],
+['👨‍⚕️','پزشک','job'],['👨‍🏫','معلم','job'],['👮','پلیس','job'],['👨‍🍳','آشپز','job'],
+['👨‍🌾','کشاورز','job'],['👨‍🔧','مکانیک','job'],['👨‍🚀','فضانورد','job'],['👨‍🚒','آتش‌نشان','job'],
+['👨‍⚖️','قاضی','job'],['👨‍🎨','نقاش','job'],['👨‍✈️','خلبان','job'],['💂','سرباز','job'],
+['🕵️','کارآگاه','job'],['👨‍💻','برنامه‌نویس','job'],['🧑‍🔬','دانشمند','job'],['🧑‍🎤','خواننده','job']
+];
+
+var DEF_MISSIONS=[
+  {id:'play', e:'🎮', t:'۵ مرحله بازی کن',            goal:5,  coins:120, score:0},
+  {id:'find', e:'🔍', t:'۱۰ تفاوت پیدا کن',           goal:10, coins:150, score:0},
+  {id:'guess',e:'🖼️', t:'۳ تصویر را درست حدس بزن',    goal:3,  coins:150, score:0},
+  {id:'nohint',e:'🧠',t:'یک مرحله را بدون راهنما تمام کن', goal:1, coins:100, score:200}
+];
+var DEF_DAILY=[{c:100,e:'🪙'},{c:150,e:'🪙'},{c:200,e:'🪙'},{c:250,e:'💰'},
+               {c:300,e:'💰'},{c:400,e:'💎'},{c:1000,e:'👑',special:true}];
+
+function defaults(){
+  return {
+    v:1,
+    team:{name:'SMRx', game:'سلطان معما', version:'۱٫۲', versionRaw:'1.2'},
+    cfg:{MAX_LIVES:5, LIFE_MS:600000, HINT_COST:50, FIFTY_COST:50, CLEAR_COST:80,
+         REVIVE_COST:100, REFILL_COST:150, TOTAL_STAGES:100, LEVEL_STEP:800},
+    d:{e:25,m:55,h:80, baseTime:100, timeDrop:0.55, minTime:35,
+       diffBase:3, diffStep:12, maxDiff:10, props:10, propStep:9,
+       gTime:30, gDrop:0.14, gMin:13},
+    mul:{coin:1, score:1},
+    features:{leaderboard:false, shop:false, buyCoins:false, rewardedAds:false, online:false,
+              duel:false, events:false, weekly:false, tournament:false, friends:false},
+    missions:JSON.parse(JSON.stringify(DEF_MISSIONS)),
+    daily:JSON.parse(JSON.stringify(DEF_DAILY)),
+    items:JSON.parse(JSON.stringify(DEF_ITEMS))
+  };
+}
+
+/* ============================================================
+   ۵) وضعیت پنل
+   ============================================================ */
+var PKEY='smrx_admin_work_v1';
+var P=defaults(), dirty=false;
+
+function pLoad(){
+  try{
+    var r=localStorage.getItem(PKEY);
+    if(!r) return;
+    var o=JSON.parse(r), d=defaults(), k, j;
+    for(k in d){
+      if(o[k]===undefined || o[k]===null) continue;
+      if(k==='cfg'||k==='d'||k==='mul'||k==='team'||k==='features'){
+        for(j in d[k]) if(o[k][j]!==undefined) d[k][j]=o[k][j];
+      } else d[k]=o[k];
+    }
+    P=d;
+  }catch(e){ toast('فایل کار قبلی خوانده نشد'); }
+}
+function pSave(){
+  try{ localStorage.setItem(PKEY,JSON.stringify(P)); }catch(e){}
+  setDirty(false);
+}
+function setDirty(v){
+  dirty=v;
+  var e=$('#dirty');
+  if(!e) return;
+  e.textContent=v?'ذخیره نشده':'ذخیره‌شده';
+  e.style.color=v?'#FFC94A':'';
+}
+function touch(){ setDirty(true); SEC.touch(); }
+
+/* مقدار عددی از ورودی */
+function num(id,def){
+  var e=$('#'+id);
+  if(!e) return def;
+  var v=parseFloat(e.value);
+  return isNaN(v)?def:v;
+}
+
+/* ============================================================
+   ۶) شبیه‌سازی همان فرمول‌های بازی (برای پیش‌نمایش)
+   ============================================================ */
+var DIFF_NAMES=['آسان','متوسط','سخت','خیلی سخت'];
+function levelOf(n){ var t=P.d; return n<=t.e?0:(n<=t.m?1:(n<=t.h?2:3)); }
+function diffCfg(n){
+  var t=P.d, d=levelOf(n), special=(n%10===0);
+  var diffs=clamp(t.diffBase+Math.floor((n-1)/t.diffStep),3,t.maxDiff);
+  if(special) diffs=Math.min(t.maxDiff,diffs+1);
+  return {n:n,d:d,special:special,diffs:diffs,
+    time:Math.round(clamp(t.baseTime-n*t.timeDrop,t.minTime,t.baseTime)),
+    props:clamp(t.props+Math.floor(n/t.propStep),10,16)};
+}
+function guessCfg(n){
+  var t=P.d, d=levelOf(n);
+  return {n:n,d:d,time:Math.round(clamp(t.gTime-n*t.gDrop,t.gMin,t.gTime))};
+}
+
+/* ============================================================
+   ۷) صفحه‌ها
+   ============================================================ */
+var TABS=[
+  ['game','🎮','بازی'],
+  ['econ','💰','اقتصاد'],
+  ['diff','🎚','سختی'],
+  ['content','🖼','محتوا'],
+  ['tasks','🎯','مأموریت و پاداش'],
+  ['feat','🧩','قابلیت‌ها'],
+  ['out','📤','خروجی'],
+  ['store','📝','متن فروشگاه'],
+  ['sec','🛡','امنیت']
+];
+var tab='game', itemQ='', itemCat='';
+
+function drawNav(){
+  var n=$('#nav'); n.innerHTML='';
+  TABS.forEach(function(t){
+    var b=el('button',(tab===t[0]?'on':''),'<span>'+t[1]+'</span><span>'+t[2]+'</span>');
+    b.onclick=function(){ tab=t[0]; draw(); };
+    n.appendChild(b);
+  });
+}
+function row(label,hint,ctrl){
+  return '<div class="row"><label>'+label+(hint?'<span class="hint">'+hint+'</span>':'')+
+         '</label>'+ctrl+'</div>';
+}
+function ni(id,val,min,max,step){
+  return '<input type="number" id="'+id+'" value="'+val+'" min="'+min+'" max="'+max+
+         '" step="'+(step||1)+'">';
+}
+function ti(id,val){ return '<input type="text" id="'+id+'" value="'+esc(val)+'">'; }
+function sw(id,on){ return '<div class="sw'+(on?' on':'')+'" id="'+id+'"><i></i></div>'; }
+
+function draw(){
+  drawNav();
+  var v=$('#view'), h='';
+
+  /* ---------- بازی ---------- */
+  if(tab==='game'){
+    h+='<h2>🎮 اطلاعات بازی</h2><div class="sub">نام‌هایی که داخل بازی نشان داده می‌شوند</div>';
+    h+='<div class="card"><div class="rows">'+
+       row('نام بازی','در صفحه اصلی و درباره ما',ti('gGame',P.team.game))+
+       row('نام تیم','در صفحه درباره ما',ti('gTeam',P.team.name))+
+       row('نسخه (فارسی)','مثل ۱٫۲',ti('gVer',P.team.version))+
+       row('نسخه (لاتین)','برای build.gradle',ti('gVerRaw',P.team.versionRaw))+
+       '</div></div>';
+    h+='<div class="card"><h3>📊 یک نگاه</h3><div class="grid3">'+
+       '<div class="kpi"><b>'+fa(P.cfg.TOTAL_STAGES*2)+'</b><span>کل مراحل</span></div>'+
+       '<div class="kpi"><b>'+fa(P.items.length)+'</b><span>تصویر در بانک</span></div>'+
+       '<div class="kpi"><b>'+fa(Object.keys(CATS).length)+'</b><span>دسته</span></div>'+
+       '</div></div>';
+    h+='<div class="warn">این پنل روی لپ‌تاپ اجرا می‌شود و به بازی وصل نیست. بعد از هر '+
+       'تغییر، دکمه <b>📤 ساخت config.js</b> را بزن و فایل را در پوشه assets بازی '+
+       'جای‌گزین کن.</div>';
+  }
+
+  /* ---------- اقتصاد ---------- */
+  else if(tab==='econ'){
+    var c=P.cfg;
+    h+='<h2>💰 اقتصاد بازی</h2><div class="sub">قیمت‌ها، جان‌ها و ضریب جایزه‌ها</div>';
+    h+='<div class="grid2">'+
+       '<div class="card"><h3>🪙 هزینه‌ها <span>(سکه)</span></h3><div class="rows">'+
+         row('راهنمای تفاوت','','<input type="number" id="eHint" value="'+c.HINT_COST+'" min="0" max="99999">')+
+         row('حذف یک گزینه','',ni('eFifty',c.FIFTY_COST,0,99999))+
+         row('واضح‌تر کردن تصویر','',ni('eClear',c.CLEAR_COST,0,99999))+
+         row('ادامه بعد از شکست','+۳۰ ثانیه',ni('eRev',c.REVIVE_COST,0,99999))+
+         row('پر کردن جان‌ها','',ni('eRef',c.REFILL_COST,0,99999))+
+       '</div></div>'+
+       '<div class="card"><h3>❤️ جان و پیشرفت</h3><div class="rows">'+
+         row('بیشترین جان','',ni('eMax',c.MAX_LIVES,1,20))+
+         row('شارژ هر جان','دقیقه',ni('eLife',Math.round(c.LIFE_MS/60000),1,600))+
+         row('تعداد مراحل هر بخش','',ni('eTot',c.TOTAL_STAGES,10,999))+
+         row('امتیاز لازم هر سطح','',ni('eLvl',c.LEVEL_STEP,50,99999))+
+       '</div></div>'+
+       '</div>';
+    h+='<div class="card"><h3>✖️ ضریب جایزه <span>جایزه پایان مرحله × این عدد</span></h3>'+
+       '<div class="grid2"><div class="rows">'+
+       row('ضریب سکه','',ni('mCoin',P.mul.coin,0.1,20,0.1))+
+       '</div><div class="rows">'+
+       row('ضریب امتیاز','',ni('mScore',P.mul.score,0.1,20,0.1))+
+       '</div></div>'+
+       '<div class="warn" style="margin-top:10px">ضریب بزرگ‌تر یعنی بازیکن سریع‌تر پیشرفت '+
+       'می‌کند. برای بازی‌های ساده بین ۱ تا ۲ خوب است.</div></div>';
+  }
+
+  /* ---------- سختی ---------- */
+  else if(tab==='diff'){
+    var d=P.d;
+    h+='<h2>🎚 درجه سختی</h2><div class="sub">هرچه مرحله بالاتر، سخت‌تر. پایین صفحه پیش‌نمایش زنده است</div>';
+    h+='<div class="card"><h3>مرز درجه‌ها</h3><div class="grid3">'+
+       '<div class="rows">'+row('پایان آسان','مرحله',ni('dE',d.e,1,999))+'</div>'+
+       '<div class="rows">'+row('پایان متوسط','مرحله',ni('dM',d.m,1,999))+'</div>'+
+       '<div class="rows">'+row('پایان سخت','بقیه خیلی سخت',ni('dH',d.h,1,999))+'</div>'+
+       '</div></div>';
+    h+='<div class="grid2">'+
+       '<div class="card"><h3>🔍 پیدا کردن تفاوت</h3><div class="rows">'+
+         row('زمان مرحله ۱','ثانیه',ni('dBt',d.baseTime,10,600))+
+         row('کم شدن زمان','در هر مرحله',ni('dTd',d.timeDrop,0,10,0.05))+
+         row('کمترین زمان','ثانیه',ni('dMt',d.minTime,5,600))+
+         row('تعداد تفاوت اولیه','',ni('dDb',d.diffBase,1,10))+
+         row('هر چند مرحله +۱ تفاوت','',ni('dDs',d.diffStep,1,100))+
+         row('بیشترین تفاوت','',ni('dDm',d.maxDiff,3,10))+
+         row('تعداد شیء صحنه','بیشتر = شلوغ‌تر',ni('dP',d.props,6,16))+
+         row('هر چند مرحله +۱ شیء','',ni('dPs',d.propStep,1,100))+
+       '</div></div>'+
+       '<div class="card"><h3>🖼 حدس تصویر</h3><div class="rows">'+
+         row('زمان مرحله ۱','ثانیه',ni('dGt',d.gTime,5,300))+
+         row('کم شدن زمان','در هر مرحله',ni('dGd',d.gDrop,0,5,0.01))+
+         row('کمترین زمان','ثانیه',ni('dGm',d.gMin,3,300))+
+       '</div><div class="warn" style="margin-top:12px">زمان بخش حدس تعیین می‌کند تصویر '+
+       'چقدر سریع واضح شود. کمتر = سخت‌تر.</div></div>'+
+       '</div>';
+    h+='<div class="card"><h3>👁 پیش‌نمایش زنده</h3><div class="pv" id="pvBox"></div>'+
+       '<div class="sub" style="margin:10px 0 0">با تغییر عددها همین‌جا به‌روز می‌شود</div></div>';
+  }
+
+  /* ---------- محتوا ---------- */
+  else if(tab==='content'){
+    h+='<h2>🖼 بانک تصویرها</h2><div class="sub">تصویرهای بخش «حدس تصویر»</div>';
+    h+='<div class="card"><h3>➕ افزودن</h3><div class="tools">'+
+       '<input type="text" id="niE" placeholder="ایموجی 🍉" style="width:120px;text-align:center">'+
+       '<input type="text" id="niN" placeholder="نام فارسی" style="width:220px">'+
+       '<select id="niC">';
+    for(var k in CATS) h+='<option value="'+k+'">'+CATS[k]+'</option>';
+    h+='</select><button class="btn g sm" id="btnAdd">افزودن به بانک</button></div></div>';
+    h+='<div class="card"><h3>فهرست <span class="count" id="cnt"></span></h3>'+
+       '<div class="tools">'+
+       '<input type="text" id="fq" placeholder="جست‌وجوی نام…" value="'+esc(itemQ)+'" style="width:220px">'+
+       '<select id="fc"><option value="">همه دسته‌ها</option>';
+    for(var k2 in CATS) h+='<option value="'+k2+'"'+(itemCat===k2?' selected':'')+'>'+CATS[k2]+'</option>';
+    h+='</select><button class="btn ghost sm" id="btnFilter">فیلتر</button>'+
+       '<div class="grow"></div>'+
+       '<button class="btn ghost sm" id="btnDefItems">برگرداندن بانک پیش‌فرض</button>'+
+       '</div><div class="tblWrap"><table><thead><tr>'+
+       '<th></th><th>نام</th><th>دسته</th><th></th></tr></thead><tbody id="tb"></tbody></table></div>'+
+       '</div>';
+    h+='<div class="card"><h3>📊 تعداد هر دسته</h3><div class="grid3" id="catStats"></div>'+
+       '<div class="warn" style="margin-top:12px">هر دسته باید حداقل ۴ تصویر داشته باشد تا '+
+       'بشود برای آن گزینه اشتباه ساخت.</div></div>';
+  }
+
+  /* ---------- مأموریت و پاداش ---------- */
+  else if(tab==='tasks'){
+    h+='<h2>🎯 مأموریت روزانه و پاداش</h2><div class="sub">هدف و جایزه‌ها</div>';
+    h+='<div class="card"><h3>مأموریت‌های روزانه</h3>';
+    P.missions.forEach(function(m,i){
+      h+='<div class="card" style="background:rgba(0,0,0,.2);margin:10px 0">'+
+         '<div style="font-weight:700;margin-bottom:6px">'+m.e+' '+esc(m.t)+'</div>'+
+         '<div class="grid3"><div class="rows">'+row('هدف','',ni('mg'+i,m.goal,1,999))+'</div>'+
+         '<div class="rows">'+row('جایزه سکه','',ni('mc'+i,m.coins,0,99999))+'</div>'+
+         '<div class="rows">'+row('جایزه امتیاز','',ni('ms'+i,m.score,0,99999))+'</div></div>'+
+         '<div class="rows">'+row('متن مأموریت','',ti('mt'+i,m.t))+'</div>'+
+         '</div>';
+    });
+    h+='</div>';
+    h+='<div class="card"><h3>🎁 پاداش ۷ روزه</h3><div class="grid3">';
+    P.daily.forEach(function(x,i){
+      h+='<div class="rows">'+row('روز '+fa(i+1)+' '+x.e,(x.special?'جایزه ویژه + جان کامل':''),
+          ni('dr'+i,x.c,0,999999))+'</div>';
+    });
+    h+='</div></div>';
+  }
+
+  /* ---------- قابلیت‌ها ---------- */
+  else if(tab==='feat'){
+    var FN={leaderboard:['🏆','جدول رتبه‌بندی','امتیاز همه بازیکن‌ها روی سرور'],
+            shop:['🏪','فروشگاه','فروش بسته‌های سکه و آیتم'],
+            buyCoins:['💳','خرید سکه','نیاز به درگاه پرداخت'],
+            rewardedAds:['📺','تبلیغات جایزه‌ای','نیاز به شبکه تبلیغاتی'],
+            online:['🌐','بازی آنلاین','نیاز به سرور'],
+            duel:['⚔️','مسابقه دو نفره','نیاز به سرور'],
+            events:['🎉','رویدادهای مناسبتی','نیاز به سرور'],
+            weekly:['📅','مراحل هفتگی','نیاز به سرور'],
+            tournament:['🏅','تورنمنت','نیاز به سرور'],
+            friends:['👥','سیستم دوستان','نیاز به سرور']};
+    h+='<h2>🧩 قابلیت‌ها</h2><div class="sub">هر کدام خاموش باشد، در بازی دیده نمی‌شود</div>';
+    h+='<div class="card"><div class="rows">';
+    for(var f in FN)
+      h+=row(FN[f][0]+' '+FN[f][1],FN[f][2],sw('f_'+f,P.features[f]));
+    h+='</div></div>';
+    h+='<div class="warn">این بخش‌ها بدون سرور کار نمی‌کنند. تا وقتی سرور نداری خاموش '+
+       'بگذارشان تا کاربر دکمه‌ای نبیند که کار نمی‌کند.</div>';
+  }
+
+  /* ---------- خروجی ---------- */
+  else if(tab==='out'){
+    h+='<h2>📤 ساخت فایل تنظیمات</h2><div class="sub">فایل config.js را بساز و در بازی بگذار</div>';
+    h+='<div class="card"><h3>۱ — فایل را بگیر</h3>'+
+       '<div class="btnRow" style="margin-top:0">'+
+       '<button class="btn g" id="btnDl">⬇️ دانلود config.js</button>'+
+       '<button class="btn ghost" id="btnCopy">📋 کپی متن</button>'+
+       '<button class="btn ghost" id="btnLoad">📥 خواندن config.js موجود</button>'+
+       '<input type="file" id="fileIn" accept=".js,.txt" style="display:none">'+
+       '</div></div>';
+    h+='<div class="card"><h3>۲ — کجا بگذارمش؟</h3>'+
+       '<div class="okBox">فایل را در این مسیر جای‌گزین کن:<br>'+
+       '<code style="direction:ltr;display:inline-block;margin-top:6px">app/src/main/assets/config.js</code>'+
+       '<br>بعد بازی را دوباره بساز:<br>'+
+       '<code style="direction:ltr;display:inline-block;margin-top:6px">./gradlew assembleDebug</code>'+
+       '</div></div>';
+    h+='<div class="card"><h3>پیش‌نمایش فایل</h3>'+
+       '<textarea id="outTxt" rows="16" readonly></textarea></div>';
+    h+='<div class="card danger"><h3>♻️ بازنشانی</h3>'+
+       '<div class="btnRow" style="margin-top:0">'+
+       '<button class="btn r sm" id="btnReset">برگرداندن همه تنظیمات به پیش‌فرض</button></div></div>';
+  }
+
+  /* ---------- متن فروشگاه ---------- */
+  else if(tab==='store'){
+    h+='<h2>📝 متن فروشگاه</h2><div class="sub">برای مایکت، کافه بازار و گوگل‌پلی</div>';
+    h+='<div class="card"><h3>عنوان و توضیح کوتاه</h3>'+
+       '<textarea id="stShort" rows="4" style="direction:rtl;text-align:right;font-family:inherit;font-size:14px"></textarea>'+
+       '<div class="btnRow"><button class="btn ghost sm" data-copy="stShort">📋 کپی</button></div></div>';
+    h+='<div class="card"><h3>توضیح کامل</h3>'+
+       '<textarea id="stLong" rows="22" style="direction:rtl;text-align:right;font-family:inherit;font-size:14px"></textarea>'+
+       '<div class="btnRow"><button class="btn ghost sm" data-copy="stLong">📋 کپی</button></div></div>';
+    h+='<div class="card"><h3>کلمات کلیدی</h3>'+
+       '<textarea id="stTags" rows="3" style="direction:rtl;text-align:right;font-family:inherit;font-size:14px"></textarea>'+
+       '<div class="btnRow"><button class="btn ghost sm" data-copy="stTags">📋 کپی</button></div></div>';
+  }
+
+  /* ---------- امنیت ---------- */
+  else if(tab==='sec'){
+    var D=SEC.data();
+    h+='<h2>🛡 امنیت پنل</h2><div class="sub">قفل این پنل روی لپ‌تاپ تو</div>';
+    h+='<div class="card"><div class="rows">'+
+       row('قفل پنل','اگر خاموش شود، بدون رمز باز می‌شود',sw('sEnable',SEC.enabled()))+
+       row('بستن نشست بعد از','دقیقه بی‌کاری',ni('sTmo',D.timeout,1,240))+
+       '</div><div class="btnRow">'+
+       '<button class="btn v sm" id="btnPin">'+(SEC.isSet()?'تغییر رمز':'تعیین رمز')+'</button>'+
+       '<button class="btn ghost sm" id="btnSecSave">ذخیره</button>'+
+       '</div></div>';
+    h+='<div class="card"><h3>📜 گزارش کارها <span>'+fa(D.log.length)+' مورد</span></h3>'+
+       '<div class="tblWrap" style="max-height:280px"><table><tbody>';
+    var lg=D.log.slice(-40).reverse();
+    if(!lg.length) h+='<tr><td class="count">چیزی ثبت نشده</td></tr>';
+    lg.forEach(function(x){
+      h+='<tr><td class="count" style="width:170px">'+new Date(x.t).toLocaleString('fa-IR')+'</td>'+
+         '<td><b>'+esc(x.a)+'</b></td><td class="count">'+esc(x.d)+'</td></tr>';
+    });
+    h+='</tbody></table></div><div class="btnRow">'+
+       '<button class="btn ghost sm" id="btnClearLog">پاک کردن گزارش</button></div></div>';
+    h+='<div class="warn">رمز به صورت خام ذخیره نمی‌شود؛ با PBKDF2-SHA256 و ۱۵۰۰۰ تکرار و '+
+       'نمک تصادفی چکیده می‌شود. چون این پنل روی لپ‌تاپ خودت اجرا می‌شود، این قفل برای '+
+       'جلوگیری از دست‌کاری اتفاقی است، نه محافظت در برابر کسی که به فایل‌های لپ‌تاپت '+
+       'دسترسی دارد.</div>';
+  }
+
+  v.innerHTML=h;
+  bind();
+}
+
+/* ============================================================
+   ۸) اتصال رویدادها
+   ============================================================ */
+function bindNum(id,setter){
+  var e=$('#'+id);
+  if(e) e.oninput=function(){ setter(parseFloat(e.value)); touch(); afterEdit(); };
+}
+function bindTxt(id,setter){
+  var e=$('#'+id);
+  if(e) e.oninput=function(){ setter(e.value); touch(); };
+}
+function afterEdit(){ if(tab==='diff') drawPreview(); if(tab==='out') drawOut(); }
+
+function bind(){
+  var i,k;
+  if(tab==='game'){
+    bindTxt('gGame',function(v){ P.team.game=v; });
+    bindTxt('gTeam',function(v){ P.team.name=v; });
+    bindTxt('gVer',function(v){ P.team.version=v; });
+    bindTxt('gVerRaw',function(v){ P.team.versionRaw=v; });
+  }
+  if(tab==='econ'){
+    bindNum('eHint',function(v){ P.cfg.HINT_COST=Math.max(0,v|0); });
+    bindNum('eFifty',function(v){ P.cfg.FIFTY_COST=Math.max(0,v|0); });
+    bindNum('eClear',function(v){ P.cfg.CLEAR_COST=Math.max(0,v|0); });
+    bindNum('eRev',function(v){ P.cfg.REVIVE_COST=Math.max(0,v|0); });
+    bindNum('eRef',function(v){ P.cfg.REFILL_COST=Math.max(0,v|0); });
+    bindNum('eMax',function(v){ P.cfg.MAX_LIVES=clamp(v|0,1,20); });
+    bindNum('eLife',function(v){ P.cfg.LIFE_MS=clamp(v|0,1,600)*60000; });
+    bindNum('eTot',function(v){ P.cfg.TOTAL_STAGES=clamp(v|0,10,999); });
+    bindNum('eLvl',function(v){ P.cfg.LEVEL_STEP=clamp(v|0,50,99999); });
+    bindNum('mCoin',function(v){ P.mul.coin=clamp(v,0.1,20); });
+    bindNum('mScore',function(v){ P.mul.score=clamp(v,0.1,20); });
+  }
+  if(tab==='diff'){
+    bindNum('dE',function(v){ P.d.e=clamp(v|0,1,999); });
+    bindNum('dM',function(v){ P.d.m=clamp(v|0,1,999); });
+    bindNum('dH',function(v){ P.d.h=clamp(v|0,1,999); });
+    bindNum('dBt',function(v){ P.d.baseTime=clamp(v|0,10,600); });
+    bindNum('dTd',function(v){ P.d.timeDrop=clamp(v,0,10); });
+    bindNum('dMt',function(v){ P.d.minTime=clamp(v|0,5,600); });
+    bindNum('dDb',function(v){ P.d.diffBase=clamp(v|0,1,10); });
+    bindNum('dDs',function(v){ P.d.diffStep=clamp(v|0,1,100); });
+    bindNum('dDm',function(v){ P.d.maxDiff=clamp(v|0,3,10); });
+    bindNum('dP',function(v){ P.d.props=clamp(v|0,6,16); });
+    bindNum('dPs',function(v){ P.d.propStep=clamp(v|0,1,100); });
+    bindNum('dGt',function(v){ P.d.gTime=clamp(v|0,5,300); });
+    bindNum('dGd',function(v){ P.d.gDrop=clamp(v,0,5); });
+    bindNum('dGm',function(v){ P.d.gMin=clamp(v|0,3,300); });
+    drawPreview();
+  }
+  if(tab==='content'){
+    $('#btnAdd').onclick=addItem;
+    $('#btnFilter').onclick=function(){
+      itemQ=($('#fq').value||'').trim(); itemCat=$('#fc').value||''; drawTable();
+    };
+    $('#fq').onkeydown=function(e){ if(e.key==='Enter') $('#btnFilter').click(); };
+    $('#btnDefItems').onclick=function(){
+      modal('برگرداندن بانک پیش‌فرض؟','<div class="warn">همه تغییرهای بانک تصویر پاک می‌شود.</div>',
+        [{t:'بله',c:'r',fn:function(){ P.items=JSON.parse(JSON.stringify(DEF_ITEMS));
+          touch(); pSave(); draw(); toast('بانک به حالت اولیه برگشت'); }},{t:'نه'}]);
+    };
+    drawTable();
+  }
+  if(tab==='tasks'){
+    P.missions.forEach(function(m,i){
+      bindNum('mg'+i,function(v){ m.goal=clamp(v|0,1,999); });
+      bindNum('mc'+i,function(v){ m.coins=Math.max(0,v|0); });
+      bindNum('ms'+i,function(v){ m.score=Math.max(0,v|0); });
+      bindTxt('mt'+i,function(v){ m.t=v; });
+    });
+    P.daily.forEach(function(x,i){ bindNum('dr'+i,function(v){ x.c=Math.max(0,v|0); }); });
+  }
+  if(tab==='feat'){
+    for(k in P.features)(function(key){
+      var e=$('#f_'+key);
+      if(e) e.onclick=function(){
+        P.features[key]=!P.features[key];
+        e.className='sw'+(P.features[key]?' on':'');
+        touch();
+      };
+    })(k);
+  }
+  if(tab==='out'){
+    drawOut();
+    $('#btnDl').onclick=download;
+    $('#btnCopy').onclick=function(){
+      var t=$('#outTxt'); t.select(); t.setSelectionRange(0,999999);
+      try{ document.execCommand('copy'); toast('کپی شد ✓'); }
+      catch(e){ toast('دستی کپی کن'); }
+    };
+    $('#btnLoad').onclick=function(){ $('#fileIn').click(); };
+    $('#fileIn').onchange=function(ev){
+      var f=ev.target.files[0];
+      if(!f) return;
+      var rd=new FileReader();
+      rd.onload=function(){ importConfig(String(rd.result)); };
+      rd.readAsText(f);
+    };
+    $('#btnReset').onclick=function(){
+      modal('بازنشانی کامل؟','<div class="warn">همه تنظیمات به حالت اولیه برمی‌گردد.</div>',
+        [{t:'بله، برگردان',c:'r',fn:function(){ P=defaults(); pSave(); draw(); toast('برگشت به پیش‌فرض'); }},
+         {t:'نه'}]);
+    };
+  }
+  if(tab==='store'){
+    drawStore();
+    $$('[data-copy]').forEach(function(b){
+      b.onclick=function(){
+        var t=$('#'+b.getAttribute('data-copy'));
+        t.select(); t.setSelectionRange(0,999999);
+        try{ document.execCommand('copy'); toast('کپی شد ✓'); }catch(e){ toast('دستی کپی کن'); }
+      };
+    });
+  }
+  if(tab==='sec'){
+    $('#sEnable').onclick=function(){
+      var on=!SEC.enabled();
+      SEC.setEnabled(on);
+      $('#sEnable').className='sw'+(on?' on':'');
+      if(on && !SEC.isSet()) toast('یادت باشد رمز تعیین کنی');
+    };
+    $('#btnSecSave').onclick=function(){ SEC.setTimeout(num('sTmo',20)); toast('ذخیره شد ✓'); };
+    $('#btnPin').onclick=setPin;
+    $('#btnClearLog').onclick=function(){ SEC.clearLog(); draw(); };
+  }
+}
+
+/* ---------- پیش‌نمایش سختی ---------- */
+function drawPreview(){
+  var box=$('#pvBox');
+  if(!box) return;
+  var pts=[1,25,50,75,P.cfg.TOTAL_STAGES], h='';
+  pts.forEach(function(n){
+    n=Math.min(n,P.cfg.TOTAL_STAGES);
+    var c=diffCfg(n), g=guessCfg(n);
+    h+='<div class="pvc"><b>مرحله '+fa(n)+'</b>'+
+       '<div class="d'+c.d+'">'+DIFF_NAMES[c.d]+'</div>'+
+       '<div>'+fa(c.diffs)+' تفاوت · '+fa(c.time)+' ثانیه</div>'+
+       '<div class="count">حدس: '+fa(g.time)+' ثانیه</div></div>';
+  });
+  box.innerHTML=h;
+}
+
+/* ---------- جدول محتوا ---------- */
+function drawTable(){
+  var tb=$('#tb');
+  if(!tb) return;
+  var h='', shown=0, i, it;
+  for(i=0;i<P.items.length;i++){
+    it=P.items[i];
+    if(itemCat && it[2]!==itemCat) continue;
+    if(itemQ && it[1].indexOf(itemQ)<0) continue;
+    shown++;
+    h+='<tr><td class="e">'+it[0]+'</td><td>'+esc(it[1])+'</td>'+
+       '<td class="count">'+(CATS[it[2]]||it[2])+'</td>'+
+       '<td class="a"><button class="ib" data-ed="'+i+'">✏️</button> '+
+       '<button class="ib del" data-del="'+i+'">🗑</button></td></tr>';
+  }
+  if(!shown) h='<tr><td colspan="4" class="count" style="padding:16px">موردی پیدا نشد</td></tr>';
+  tb.innerHTML=h;
+  $('#cnt').textContent=fa(shown)+' از '+fa(P.items.length)+' تصویر';
+  $$('[data-ed]',tb).forEach(function(b){ b.onclick=function(){ editItem(+b.getAttribute('data-ed')); }; });
+  $$('[data-del]',tb).forEach(function(b){ b.onclick=function(){ delItem(+b.getAttribute('data-del')); }; });
+  var cs=$('#catStats'), out='', k, n;
+  if(cs){
+    for(k in CATS){
+      n=P.items.filter(function(x){ return x[2]===k; }).length;
+      out+='<div class="kpi" style="padding:8px"><b style="font-size:17px;'+
+           (n<4?'color:var(--red)':'')+'">'+fa(n)+'</b><span>'+CATS[k]+'</span></div>';
+    }
+    cs.innerHTML=out;
+  }
+}
+function addItem(){
+  var e=($('#niE').value||'').trim(), n=($('#niN').value||'').trim(), c=$('#niC').value;
+  if(!e||!n){ toast('ایموجی و نام را پر کن'); return; }
+  P.items.push([e,n.slice(0,26),c]);
+  $('#niE').value=''; $('#niN').value='';
+  touch(); pSave(); drawTable();
+  toast('«'+n+'» اضافه شد ✓');
+}
+function editItem(i){
+  var it=P.items[i];
+  if(!it) return;
+  var opts='',k;
+  for(k in CATS) opts+='<option value="'+k+'"'+(it[2]===k?' selected':'')+'>'+CATS[k]+'</option>';
+  var b=modal('ویرایش تصویر',
+    '<div class="rows">'+
+    row('ایموجی','','<input type="text" id="edE" value="'+esc(it[0])+'" style="width:110px;text-align:center">')+
+    row('نام','','<input type="text" id="edN" value="'+esc(it[1])+'">')+
+    row('دسته','','<select id="edC">'+opts+'</select>')+
+    '</div>',
+    [{t:'ذخیره',c:'g',keep:true,fn:function(){
+      var e2=($('#edE',b).value||'').trim(), n2=($('#edN',b).value||'').trim();
+      if(!e2||!n2){ toast('هر دو را پر کن'); return; }
+      P.items[i]=[e2,n2.slice(0,26),$('#edC',b).value];
+      touch(); pSave(); closeModal(); drawTable(); toast('ویرایش شد ✓');
+    }},{t:'انصراف'}]);
+}
+function delItem(i){
+  var it=P.items[i];
+  if(!it) return;
+  if(P.items.length<=8){ toast('بانک نباید کمتر از ۸ تصویر داشته باشد'); return; }
+  modal('حذف «'+esc(it[1])+'»؟','',
+    [{t:'حذف کن',c:'r',fn:function(){ P.items.splice(i,1); touch(); pSave(); drawTable();
+      toast('حذف شد'); }},{t:'نه'}]);
+}
+
+/* ---------- خروجی ---------- */
+function buildConfig(){
+  var o={
+    v:1,
+    team:P.team,
+    cfg:P.cfg,
+    d:P.d,
+    mul:P.mul,
+    features:P.features,
+    missions:P.missions,
+    daily:P.daily,
+    items:P.items
+  };
+  var head='/* ------------------------------------------------------------------\n'+
+    '   تنظیمات بازی «'+P.team.game+'»\n'+
+    '   ساخته‌شده با پنل مدیریت تیم '+P.team.name+'\n'+
+    '   تاریخ ساخت: '+new Date().toLocaleString('fa-IR')+'\n'+
+    '\n'+
+    '   این فایل را در مسیر app/src/main/assets/config.js بگذار.\n'+
+    '   دستی ویرایشش نکن؛ از پنل دوباره بساز.\n'+
+    '   ------------------------------------------------------------------ */\n';
+  return head+'window.SULTAN_CONFIG = '+JSON.stringify(o,null,2)+';\n';
+}
+function drawOut(){
+  var t=$('#outTxt');
+  if(t) t.value=buildConfig();
+}
+function download(){
+  var blob=new Blob([buildConfig()],{type:'text/javascript;charset=utf-8'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='config.js';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },400);
+  SEC.log('ساخت config.js');
+  toast('config.js دانلود شد ✓');
+}
+function importConfig(text){
+  var i=text.indexOf('{'), j=text.lastIndexOf('}');
+  if(i<0||j<i){ toast('فایل شناخته نشد'); return; }
+  var o;
+  try{ o=JSON.parse(text.slice(i,j+1)); }
+  catch(e){ toast('فایل خراب است'); return; }
+  var d=defaults(), k, x;
+  for(k in d){
+    if(o[k]===undefined||o[k]===null) continue;
+    if(k==='cfg'||k==='d'||k==='mul'||k==='team'||k==='features'){
+      for(x in d[k]) if(o[k][x]!==undefined) d[k][x]=o[k][x];
+    } else d[k]=o[k];
+  }
+  P=d; pSave(); draw();
+  SEC.log('خواندن config.js');
+  toast('تنظیمات خوانده شد ✓');
+}
+
+/* ---------- متن فروشگاه ---------- */
+function drawStore(){
+  var g=P.team.game, t=P.team.name, st=fa(P.cfg.TOTAL_STAGES*2), im=fa(P.items.length);
+  var short=g+' — بازی پازل و سرگرمی فارسی\n\n'+
+    'تفاوت‌ها را پیدا کن، تصویرهای تار را حدس بزن! '+st+' مرحله فارسی، بدون نیاز به اینترنت.';
+  var long=
+'👑 '+g+' — بازی معما و سرگرمی کاملاً فارسی\n\n'+
+'دو بازی جذاب در یک برنامه! هم چشم‌هایت را تیز کن، هم ذهنت را به چالش بکش.\n'+
+'کاملاً فارسی، راست‌چین و بدون نیاز به اینترنت.\n\n'+
+'🔍 پیدا کردن تفاوت\n'+
+'دو تصویر تقریباً یکسان کنار هم می‌بینی و باید تفاوت‌هایشان را پیدا کنی.\n'+
+'• ۱۰۰ مرحله با ۳ تا ۱۰ تفاوت\n'+
+'• صحنه‌های رنگارنگ: پارک، ساحل، شهر، زیر دریا، فضا، اتاق و مزرعه\n'+
+'• تفاوت‌ها می‌توانند رنگ، اندازه، شکل یا جزئیات باشند\n'+
+'• هر چه سریع‌تر پیدا کنی، امتیاز بیشتری می‌گیری\n\n'+
+'🖼️ حدس تصویر\n'+
+'تصویر تار و پوشیده است و کم‌کم واضح می‌شود. هرچه زودتر حدس بزنی، امتیاز بیشتر!\n'+
+'• '+im+' تصویر در ۱۰ دسته: حیوانات، غذاها، میوه‌ها، ورزش، خودرو، شغل‌ها و…\n'+
+'• چهار گزینه برای هر تصویر\n'+
+'• کمک‌های ویژه: حذف گزینه اشتباه، واضح‌تر کردن تصویر\n\n'+
+'✨ چه چیزهای دیگری دارد؟\n'+
+'• '+st+' مرحله که کم‌کم سخت‌تر می‌شوند\n'+
+'• هر ۱۰ مرحله یک مرحله ویژه با جایزه دو برابر ⭐\n'+
+'• سکه، امتیاز، سطح و ستاره برای هر مرحله\n'+
+'• پاداش روزانه ۷ روزه و جایزه ویژه روز هفتم 🎁\n'+
+'• مأموریت‌های روزانه با جایزه\n'+
+'• پروفایل با نام و آواتار دلخواه\n\n'+
+'📱 چرا این بازی؟\n'+
+'• کاملاً فارسی و راست‌چین\n'+
+'• بدون نیاز به اینترنت — همه‌جا قابل بازی\n'+
+'• حجم کم و اجرای روان روی گوشی‌های ساده\n'+
+'• بدون تبلیغات مزاحم\n'+
+'• مناسب همه سنین\n\n'+
+'یاد گرفتنش چند ثانیه طول می‌کشد، ولی رسیدن به مرحله آخر کار هر کسی نیست!\n'+
+'همین حالا نصب کن و ببین تا کجا می‌توانی پیش بروی. 👑\n\n'+
+'ساخته تیم '+t;
+  var tags='بازی فکری، پازل فارسی، پیدا کردن تفاوت، حدس تصویر، بازی آفلاین، سرگرمی، '+
+    'معما، بازی ایرانی، تقویت حافظه، بازی بدون اینترنت، بازی خانوادگی، هوش و سرگرمی';
+  if($('#stShort')) $('#stShort').value=short;
+  if($('#stLong')) $('#stLong').value=long;
+  if($('#stTags')) $('#stTags').value=tags;
+}
+
+/* ---------- رمز ---------- */
+function setPin(){
+  var b=modal(SEC.isSet()?'تغییر رمز پنل':'تعیین رمز پنل',
+    (SEC.isSet()?'<div class="rows">'+row('رمز فعلی','','<input type="password" id="p0" style="width:150px;text-align:center">')+'</div>':'')+
+    '<div class="rows">'+
+    row('رمز تازه','۴ تا ۱۲ رقم','<input type="password" id="p1" style="width:150px;text-align:center">')+
+    row('تکرار رمز تازه','','<input type="password" id="p2" style="width:150px;text-align:center">')+
+    '</div>',
+    [{t:'ذخیره',c:'g',keep:true,fn:function(){
+      if(SEC.isSet() && SEC.check($('#p0',b).value)!=='ok'){ toast('رمز فعلی درست نیست'); return; }
+      var a=$('#p1',b).value, c=$('#p2',b).value;
+      if(a.length<4){ toast('رمز حداقل ۴ رقم باشد'); return; }
+      if(a!==c){ toast('دو رمز یکی نیستند'); return; }
+      var rec=SEC.setPin(a);
+      closeModal();
+      modal('کد بازیابی',
+        '<div class="warn">این کد را جایی امن یادداشت کن. اگر رمز را فراموش کردی، '+
+        'تنها راه باز کردن پنل همین کد است.</div>'+
+        '<div style="font-size:22px;text-align:center;letter-spacing:3px;margin:14px 0;'+
+        'direction:ltr;font-family:monospace">'+rec+'</div>',
+        [{t:'یادداشت کردم',c:'g',fn:function(){ draw(); }}]);
+    }},{t:'انصراف'}]);
+}
+
+/* ============================================================
+   ۹) ورود
+   ============================================================ */
+function showApp(){
+  $('#gate').className='off';
+  $('#app').className='on';
+  draw();
+}
+function gateInit(){
+  var g=$('#gate'), msg=$('#gateMsg'), pin=$('#pin');
+  if(!SEC.enabled()){ showApp(); return; }
+  if(!SEC.isSet()){
+    $('#gateSub').textContent='بار اول است — یک رمز ۴ تا ۱۲ رقمی بساز';
+    $('#gateGo').textContent='ساخت رمز';
+    $('#gateForgot').style.display='none';
+  }
+  function fail(t){ msg.className='gateMsg bad'; msg.textContent=t; }
+  $('#gateGo').onclick=function(){
+    var v=pin.value;
+    if(!SEC.isSet()){
+      if(v.length<4){ fail('رمز حداقل ۴ رقم باشد'); return; }
+      var rec=SEC.setPin(v);
+      SEC.check(v);
+      msg.className='gateMsg ok';
+      msg.textContent='کد بازیابی: '+rec+' — یادداشتش کن!';
+      setTimeout(showApp,2600);
+      return;
+    }
+    var w=SEC.lockedFor();
+    if(w>0){ fail('قفل است — '+Math.ceil(w/1000)+' ثانیه صبر کن'); return; }
+    msg.className='gateMsg'; msg.textContent='بررسی…';
+    setTimeout(function(){
+      var r=SEC.check(v);
+      if(r==='ok'){ pin.value=''; showApp(); }
+      else if(r==='lock'){ fail('قفل است، کمی صبر کن'); }
+      else{
+        var l=SEC.lockedFor();
+        fail(l>0?('رمز اشتباه — قفل تا '+Math.ceil(l/1000)+' ثانیه'):'رمز اشتباه است');
+      }
+    },20);
+  };
+  pin.onkeydown=function(e){ if(e.key==='Enter') $('#gateGo').click(); };
+  $('#gateForgot').onclick=function(){
+    var b=modal('بازیابی با کد پشتیبان',
+      '<div class="rows">'+row('کد ۱۰ حرفی','','<input type="text" id="rc" style="width:180px;text-align:center">')+'</div>',
+      [{t:'بازیابی',c:'g',keep:true,fn:function(){
+        if(SEC.recover($('#rc',b).value)){
+          closeModal();
+          toast('رمز پاک شد — رمز تازه بساز');
+          setTimeout(function(){ location.reload(); },900);
+        } else toast('کد درست نیست');
+      }},{t:'انصراف'}]);
+  };
+  pin.focus();
+}
+
+/* ============================================================
+   ۱۰) راه‌اندازی
+   ============================================================ */
+SEC.init();
+pLoad();
+gateInit();
+setDirty(false);
+
+$('#btnExport').onclick=function(){ pSave(); tab='out'; draw(); download(); };
+$('#btnLock').onclick=function(){
+  pSave(); SEC.lockNow();
+  if(SEC.enabled()) location.reload();
+  else toast('قفل پنل خاموش است');
+};
+window.addEventListener('beforeunload',function(e){
+  pSave();
+  if(dirty){ e.preventDefault(); e.returnValue=''; }
+});
+setInterval(function(){
+  if(dirty) pSave();
+  if(SEC.enabled() && !SEC.open() && $('#app').className==='on'){
+    toast('نشست بسته شد');
+    setTimeout(function(){ location.reload(); },700);
+  }
+},20000);
+
+/* برای تست خودکار */
+window.ADMIN={ P:function(){return P;}, sec:SEC, crypto:CRYPTO, build:buildConfig,
+               go:function(t){ tab=t; draw(); }, defaults:defaults, load:importConfig };
+})();
+</script>
+</body>
+</html>
