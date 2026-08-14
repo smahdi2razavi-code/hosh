@@ -435,16 +435,16 @@ const errs = [];
     await page.setViewportSize({ width: 393, height: 760 });
   });
 
-  await page.screenshot({ path: require('path').resolve(__dirname,'../screenshots/shot-home.png') });
+  await page.screenshot({ path: require('path').resolve(__dirname,'output/shot-home.png') });
   await page.evaluate(() => window.SM.diff(12));
   await page.waitForTimeout(600);
-  await page.screenshot({ path: require('path').resolve(__dirname,'../screenshots/shot-diff.png') });
+  await page.screenshot({ path: require('path').resolve(__dirname,'output/shot-diff.png') });
   await page.evaluate(() => window.SM.guess(4));
   await page.waitForTimeout(600);
-  await page.screenshot({ path: require('path').resolve(__dirname,'../screenshots/shot-guess.png') });
+  await page.screenshot({ path: require('path').resolve(__dirname,'output/shot-guess.png') });
   await page.evaluate(() => window.SM.go('stages'));
   await page.waitForTimeout(400);
-  await page.screenshot({ path: require('path').resolve(__dirname,'../screenshots/shot-stages.png') });
+  await page.screenshot({ path: require('path').resolve(__dirname,'output/shot-stages.png') });
 
   await browser.close();
   console.log('\n' + (errs.length ? 'ERRORS (' + errs.length + '):\n' + errs.join('\n') : 'ALL CLEAN ✅'));

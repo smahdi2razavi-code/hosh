@@ -475,22 +475,22 @@ const errs = [];
 
   await page.evaluate(() => window.SM.go('about'));
   await page.waitForTimeout(400);
-  await page.screenshot({ path: require('path').resolve(__dirname,'../screenshots/a1-about.png') });
+  await page.screenshot({ path: require('path').resolve(__dirname,'output/a1-about.png') });
   await page.evaluate(() => { window.SM.sec.lockNow(); });
   await page.click('#brandMark'); await page.click('#brandMark'); await page.click('#brandMark');
   await page.click('#brandMark'); await page.click('#brandMark'); await page.click('#brandMark');
   await page.click('#brandMark');
   await page.waitForTimeout(400);
-  await page.screenshot({ path: require('path').resolve(__dirname,'../screenshots/a2-login.png') });
+  await page.screenshot({ path: require('path').resolve(__dirname,'output/a2-login.png') });
   await typePin('4321');
   await page.waitForTimeout(700);
-  await page.screenshot({ path: require('path').resolve(__dirname,'../screenshots/a3-dash.png') });
+  await page.screenshot({ path: require('path').resolve(__dirname,'output/a3-dash.png') });
   await page.click('.aTab[data-t="econ"]'); await page.waitForTimeout(400);
-  await page.screenshot({ path: require('path').resolve(__dirname,'../screenshots/a4-econ.png') });
+  await page.screenshot({ path: require('path').resolve(__dirname,'output/a4-econ.png') });
   await page.click('.aTab[data-t="content"]'); await page.waitForTimeout(400);
-  await page.screenshot({ path: require('path').resolve(__dirname,'../screenshots/a5-content.png') });
+  await page.screenshot({ path: require('path').resolve(__dirname,'output/a5-content.png') });
   await page.click('.aTab[data-t="sec"]'); await page.waitForTimeout(400);
-  await page.screenshot({ path: require('path').resolve(__dirname,'../screenshots/a6-sec.png') });
+  await page.screenshot({ path: require('path').resolve(__dirname,'output/a6-sec.png') });
 
   await browser.close();
   console.log('\n' + (errs.length ? 'ERRORS (' + errs.length + '):\n' + errs.join('\n') : 'ALL CLEAN ✅'));

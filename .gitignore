@@ -16,3 +16,6 @@ keystore.properties
 *.keystore
 *.apk
 *.aab
+
+# عکس‌هایی که تست‌ها می‌سازند
+tests/output/
