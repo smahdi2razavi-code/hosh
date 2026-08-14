@@ -1,0 +1,18 @@
+*.iml
+.gradle/
+.kotlin/
+/build
+/app/build
+/captures
+/.idea/
+local.properties
+.DS_Store
+.externalNativeBuild
+.cxx
+
+# فایل کلید امضا هرگز نباید در گیت باشد
+keystore.properties
+*.jks
+*.keystore
+*.apk
+*.aab

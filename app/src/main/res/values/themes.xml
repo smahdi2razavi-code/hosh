@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Sultan" parent="android:Theme.Material.NoActionBar">
+        <item name="android:statusBarColor">#241A5C</item>
+        <item name="android:navigationBarColor">#150E35</item>
+        <item name="android:windowBackground">#150E35</item>
+    </style>
+</resources>
